@@ -29,12 +29,12 @@ public class NewGameCommand implements Command {
         System.out.println("Your team is embarking on a journey to build");
         System.out.println("the next big thing in Silicon Valley. Good luck!");
         System.out.println();
-        System.out.println("--- Starting Resources ---");
-        System.out.println("  Fund         : $80,000");
-        System.out.println("  Team Morale  : 100/100");
-        System.out.println("  Team Energy  : 100/100");
-        System.out.println("  Progress     : 0% to destination");
-        System.out.println("--------------------------");
+        System.out.println("--- Watch Out For ---");
+        System.out.println("  Fund         : Don't run out — every decision costs money");
+        System.out.println("  Team Morale  : Keep trust alive — tension and doubt will break the team");
+        System.out.println("  Team Energy  : Watch stamina — sleep deprivation and burnout end journeys");
+        System.out.println("  Progress     : Reach 100% to make it to Silicon Valley");
+        System.out.println("---------------------");
 
         GameState state = new GameState();
         GameEngine engine = new GameEngine(state, scanner);
