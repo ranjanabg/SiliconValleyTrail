@@ -16,7 +16,7 @@ public class Menu {
 
     public Menu(Scanner scanner) {
         this.scanner = scanner;
-        addOption("1", new NewGameCommand());
+        addOption("1", new NewGameCommand(scanner));
         addOption("2", new LoadGameCommand());
         addOption("3", new QuitCommand());
     }

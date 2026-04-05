@@ -1,6 +1,17 @@
 package com.siliconvalleytrail.commands;
 
+import com.siliconvalleytrail.engine.GameEngine;
+import com.siliconvalleytrail.engine.GameState;
+
+import java.util.Scanner;
+
 public class NewGameCommand implements Command {
+
+    private final Scanner scanner;
+
+    public NewGameCommand(Scanner scanner) {
+        this.scanner = scanner;
+    }
 
     @Override
     public String getOptionLabel() {
@@ -24,5 +35,12 @@ public class NewGameCommand implements Command {
         System.out.println("  Team Energy  : 100/100");
         System.out.println("  Progress     : 0% to destination");
         System.out.println("--------------------------");
+
+        GameState state = new GameState();
+        GameEngine engine = new GameEngine(state, scanner);
+
+        while (!engine.isGameOver()) {
+            engine.runDay();
+        }
     }
 }
