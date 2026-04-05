@@ -12,8 +12,10 @@ import java.util.Scanner;
 public class Menu {
 
     private final Map<String, Command> options = new LinkedHashMap<>();
+    private final Scanner scanner;
 
-    public Menu() {
+    public Menu(Scanner scanner) {
+        this.scanner = scanner;
         addOption("1", new NewGameCommand());
         addOption("2", new LoadGameCommand());
         addOption("3", new QuitCommand());
@@ -33,24 +35,18 @@ public class Menu {
 
     public String requestOption() {
         System.out.print("Enter your choice: ");
-
-        final Scanner scanner = new Scanner(System.in);
-        final String playerInput = scanner.nextLine().trim();
-        scanner.close();
-
-        return playerInput;
+        return scanner.nextLine().trim();
     }
 
     public void executeOption(String playerInput) {
         Command selected = options.get(playerInput);
-        
+
         if (selected == null) {
             System.out.println("Invalid option. Please enter a number between 1 and " + options.size() + ".");
             return;
         }
-            
+
         selected.execute();
-        return;
     }
 
     private void welcomeMessage() {

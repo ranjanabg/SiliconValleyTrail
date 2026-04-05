@@ -9,6 +9,6 @@ public class LoadGameCommand implements Command {
 
     @Override
     public void execute() {
-        System.out.println("Loading saved game...");
+        System.out.println("No saved games for now.");
     }
 }
