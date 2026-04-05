@@ -3,6 +3,7 @@ package com.siliconvalleytrail.commands;
 import com.siliconvalleytrail.engine.GameEngine;
 import com.siliconvalleytrail.engine.GameState;
 
+
 import java.util.Scanner;
 
 public class NewGameCommand implements Command {
@@ -26,8 +27,8 @@ public class NewGameCommand implements Command {
         System.out.println("║   Welcome to the Silicon Valley Trail!   ║");
         System.out.println("╚══════════════════════════════════════════╝");
         System.out.println();
-        System.out.println("Your team is embarking on a journey to build");
-        System.out.println("the next big thing in Silicon Valley. Good luck!");
+        System.out.println("Your team is embarking on a journey from " + GameEngine.SOURCE);
+        System.out.println("all the way to " + GameEngine.DESTINATION + " to build the next Big thing in Silicon Valley. Good luck!");
         System.out.println();
         System.out.println("--- Watch Out For ---");
         System.out.println("  Fund         : Don't run out — every decision costs money");

@@ -6,6 +6,9 @@ import java.util.Scanner;
 
 public class GameEngine {
 
+    public static final String SOURCE = "San Jose";
+    public static final String DESTINATION = "San Francisco";
+
     private final GameState state;
     private final Scanner scanner;
 
@@ -25,6 +28,8 @@ public class GameEngine {
         printChoices();
 
         Choice choice = getPlayerChoice();
+        if (choice == null) return;
+
         applyChoice(choice);
 
         checkLoseConditions();
@@ -49,7 +54,7 @@ public class GameEngine {
         System.out.printf("  Fund         : $%,d%n", state.getFund());
         System.out.println("  Team Morale  : " + state.getMorale() + "/100");
         System.out.println("  Team Energy  : " + state.getEnergy() + "/100");
-        System.out.println("  Progress     : " + state.getProgress() + "% to destination");
+        System.out.println("  Journey      : " + SOURCE + " --[" + state.getProgress() + "%]--> " + DESTINATION);
         System.out.println("==========================================");
         System.out.println();
     }
@@ -60,17 +65,25 @@ public class GameEngine {
         for (int i = 0; i < DAILY_CHOICES.size(); i++) {
             System.out.println("  " + (i + 1) + ". " + DAILY_CHOICES.get(i).getDescription());
         }
+        System.out.println("  4. Exit Game");
         System.out.println();
     }
 
     private Choice getPlayerChoice() {
         while (true) {
-            System.out.print("Enter your choice (1-3): ");
+            System.out.print("Enter your choice (1-4): ");
             String input = scanner.nextLine().trim();
-            if (input.equals("1") || input.equals("2") || input.equals("3")) {
-                return DAILY_CHOICES.get(Integer.parseInt(input) - 1);
+            switch (input) {
+                case "1": case "2": case "3":
+                    return DAILY_CHOICES.get(Integer.parseInt(input) - 1);
+                case "4":
+                    System.out.println();
+                    System.out.println("Exiting game. See you on the trail!");
+                    state.endGame();
+                    return null;
+                default:
+                    System.out.println("Invalid choice. Please enter 1, 2, 3, or 4.");
             }
-            System.out.println("Invalid choice. Please enter 1, 2, or 3.");
         }
     }
 
