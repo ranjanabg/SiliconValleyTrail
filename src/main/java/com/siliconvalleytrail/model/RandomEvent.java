@@ -11,4 +11,7 @@ public class RandomEvent {
     private final int moraleDelta;
     private final int energyDelta;
     private final int progressDelta;
+    private final int connectionsDelta;
+    private final int hypeDelta;
+    private final int techDebtDelta;
 }

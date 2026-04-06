@@ -22,9 +22,9 @@ public class GameEngine {
     private boolean playerExited = false;
 
     private static final List<Choice> DAILY_CHOICES = Arrays.asList(
-        new Choice("🏃 Sprint       - Push the team hard to move faster",  -3000, -10, -20, +15),
-        new Choice("🚶 Steady Pace  - Move at a sustainable speed",        -2000,  -5, -10,  +8),
-        new Choice("😴 Rest Day     - Let the team recover",               -1000, +20, +25,   0)
+        new Choice("🏃 Sprint       - Push the team hard to move faster",  -3000, -10, -20, +15, 0, 0, +15),
+        new Choice("🚶 Steady Pace  - Move at a sustainable speed",        -2000,  -5, -10,  +8, 0, 0,  +5),
+        new Choice("😴 Rest Day     - Let the team recover",               -1000, +20, +25,   0, 0, 0, -10)
     );
 
     public GameEngine(Scanner scanner, SaveManager saveManager, String userId) {
@@ -96,6 +96,8 @@ public class GameEngine {
         String energyEmoji = state.getEnergy() < 20 ? "🪫" : "🔋";
         System.out.println("  " + moraleEmoji + " Team Morale  : " + state.getMorale() + "/100");
         System.out.println("  " + energyEmoji + " Team Energy  : " + state.getEnergy() + "/100");
+        System.out.println("  🤝 Connections  : " + state.getConnections() + "/100");
+        System.out.println("  🔥 Hype         : " + state.getHype() + "/100");
         System.out.println("  🗺️  Journey      : " + SOURCE + " " + buildProgressBar(state.getProgress()) + " " + DESTINATION);
         System.out.println("==========================================");
         System.out.println();
@@ -139,6 +141,9 @@ public class GameEngine {
         state.applyMoraleDelta(choice.getMoraleDelta());
         state.applyEnergyDelta(choice.getEnergyDelta());
         state.applyProgressDelta(choice.getProgressDelta());
+        state.applyConnectionsDelta(choice.getConnectionsDelta());
+        state.applyHypeDelta(choice.getHypeDelta());
+        state.applyTechDebtDelta(choice.getTechDebtDelta());
 
         System.out.println();
         System.out.println("Your team chose: " + choice.getDescription().split("-")[0].trim());

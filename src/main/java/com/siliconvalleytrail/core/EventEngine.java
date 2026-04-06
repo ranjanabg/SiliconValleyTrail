@@ -12,7 +12,7 @@ public class EventEngine {
     // Single event for now. Will expand to a pool with random triggering in the future.
     private static final RandomEvent DAILY_EVENT = new RandomEvent(
         "The team stopped at a roadside diner for a meal. Everyone feels a little more human.",
-        -300, +3, +5, 0
+        -300, +3, +5, 0, 0, 0, 0
     );
 
     public EventEngine(Scanner scanner) {
@@ -36,6 +36,9 @@ public class EventEngine {
             state.applyMoraleDelta(event.getMoraleDelta());
             state.applyEnergyDelta(event.getEnergyDelta());
             state.applyProgressDelta(event.getProgressDelta());
+            state.applyConnectionsDelta(event.getConnectionsDelta());
+            state.applyHypeDelta(event.getHypeDelta());
+            state.applyTechDebtDelta(event.getTechDebtDelta());
             System.out.println("  Event accepted.");
         } else {
             System.out.println("  Event declined. The team pushes on.");
