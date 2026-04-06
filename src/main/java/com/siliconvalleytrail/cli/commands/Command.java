@@ -1,4 +1,4 @@
-package com.siliconvalleytrail.commands;
+package com.siliconvalleytrail.cli.commands;
 
 public interface Command {
     String getOptionLabel();

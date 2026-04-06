@@ -1,6 +1,8 @@
-package com.siliconvalleytrail.engine;
+package com.siliconvalleytrail.core;
 
-import com.siliconvalleytrail.save.SaveManager;
+import com.siliconvalleytrail.model.Choice;
+import com.siliconvalleytrail.model.GameState;
+import com.siliconvalleytrail.storage.SaveManager;
 
 import java.util.Arrays;
 import java.util.List;

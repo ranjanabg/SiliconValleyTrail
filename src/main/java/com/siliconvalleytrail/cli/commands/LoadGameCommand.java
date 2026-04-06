@@ -1,8 +1,8 @@
-package com.siliconvalleytrail.commands;
+package com.siliconvalleytrail.cli.commands;
 
-import com.siliconvalleytrail.engine.GameEngine;
-import com.siliconvalleytrail.engine.GameState;
-import com.siliconvalleytrail.save.SaveManager;
+import com.siliconvalleytrail.core.GameEngine;
+import com.siliconvalleytrail.model.GameState;
+import com.siliconvalleytrail.storage.SaveManager;
 
 import java.util.Scanner;
 

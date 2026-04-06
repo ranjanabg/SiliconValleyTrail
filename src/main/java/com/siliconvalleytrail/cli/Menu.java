@@ -1,6 +1,6 @@
-package com.siliconvalleytrail;
+package com.siliconvalleytrail.cli;
 
-import com.siliconvalleytrail.commands.Command;
+import com.siliconvalleytrail.cli.commands.Command;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -1,10 +1,11 @@
 package com.siliconvalleytrail;
 
-import com.siliconvalleytrail.commands.LoadGameCommand;
-import com.siliconvalleytrail.commands.NewGameCommand;
-import com.siliconvalleytrail.commands.QuitCommand;
+import com.siliconvalleytrail.cli.Menu;
+import com.siliconvalleytrail.cli.commands.LoadGameCommand;
+import com.siliconvalleytrail.cli.commands.NewGameCommand;
+import com.siliconvalleytrail.cli.commands.QuitCommand;
 import com.siliconvalleytrail.model.User;
-import com.siliconvalleytrail.save.SaveManager;
+import com.siliconvalleytrail.storage.SaveManager;
 
 import java.util.Scanner;
 

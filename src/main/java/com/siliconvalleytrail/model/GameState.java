@@ -1,4 +1,4 @@
-package com.siliconvalleytrail.engine;
+package com.siliconvalleytrail.model;
 
 import lombok.Getter;
 
