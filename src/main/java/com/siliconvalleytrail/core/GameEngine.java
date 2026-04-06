@@ -19,6 +19,7 @@ public class GameEngine {
     private final String userId;
     private final MilestoneTracker milestoneTracker = new MilestoneTracker();
     private final EventEngine eventEngine;
+    private boolean playerExited = false;
 
     private static final List<Choice> DAILY_CHOICES = Arrays.asList(
         new Choice("Sprint       - Push the team hard to move faster",  -3000, -10, -20, +15),
@@ -43,8 +44,16 @@ public class GameEngine {
     }
 
     public void start() {
-        while (!state.isGameOver()) {
-            runDay();
+        while (true) {
+            while (!state.isGameOver()) {
+                runDay();
+            }
+            if (playerExited || !promptRestart()) {
+                break;
+            }
+            state.reset();
+            milestoneTracker.reset();
+            playerExited = false;
         }
     }
 
@@ -113,6 +122,7 @@ public class GameEngine {
                 case "4":
                     System.out.println();
                     System.out.println("Exiting game. See you on the trail!");
+                    playerExited = true;
                     state.endGame();
                     return null;
                 default:
@@ -186,6 +196,13 @@ public class GameEngine {
         int filled = progress / 10;
         int empty = 10 - filled;
         return "[" + "█".repeat(filled) + "░".repeat(empty) + "] " + progress + "%";
+    }
+
+    private boolean promptRestart() {
+        System.out.println();
+        System.out.print("Would you like to play again? (y/n): ");
+        String input = scanner.nextLine().trim().toLowerCase();
+        return input.equals("y") || input.equals("yes");
     }
 
     private void pause() {

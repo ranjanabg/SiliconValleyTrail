@@ -20,6 +20,15 @@ public class GameState {
     public void advanceDay() { day++; }
     public void endGame() { gameOver = true; }
 
+    public void reset() {
+        day = 1;
+        fund = 80000;
+        morale = 100;
+        energy = 100;
+        progress = 0;
+        gameOver = false;
+    }
+
     private int clamp(int value, int min, int max) {
         return Math.max(min, Math.min(max, value));
     }

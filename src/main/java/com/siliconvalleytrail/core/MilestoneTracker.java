@@ -33,6 +33,10 @@ public class MilestoneTracker {
 
     private int nextMilestoneIndex = 0;
 
+    public void reset() {
+        nextMilestoneIndex = 0;
+    }
+
     public void check(GameState state) {
         while (nextMilestoneIndex < milestones.size() &&
                state.getProgress() >= milestones.get(nextMilestoneIndex).getProgressThreshold()) {
