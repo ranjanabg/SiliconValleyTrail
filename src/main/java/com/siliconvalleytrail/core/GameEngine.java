@@ -137,29 +137,49 @@ public class GameEngine {
 
     private void checkLoseConditions() {
         if (state.getFund() <= 0) {
-            System.out.println();
-            System.out.println("GAME OVER: You ran out of funding. The journey ends here.");
-            state.endGame();
+            printLoseScreen("You ran out of funding. The journey ends here.");
         } else if (state.getMorale() <= 0) {
-            System.out.println();
-            System.out.println("GAME OVER: Team morale hit zero. Everyone quit.");
-            state.endGame();
+            printLoseScreen("Team morale hit zero. Everyone quit.");
         } else if (state.getEnergy() <= 0) {
-            System.out.println();
-            System.out.println("GAME OVER: Your team burned out completely.");
-            state.endGame();
+            printLoseScreen("Your team burned out completely.");
         }
     }
 
     private void checkWinCondition() {
         if (state.getProgress() >= 100) {
-            System.out.println();
-            System.out.println("╔══════════════════════════════════════════╗");
-            System.out.println("║   YOU MADE IT TO SILICON VALLEY!         ║");
-            System.out.println("║   Your startup journey is complete!      ║");
-            System.out.println("╚══════════════════════════════════════════╝");
-            state.endGame();
+            printWinScreen();
         }
+    }
+
+    private void printWinScreen() {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║       YOU MADE IT TO SAN FRANCISCO!      ║");
+        System.out.println("║     Your startup journey is complete!    ║");
+        System.out.println("╚══════════════════════════════════════════╝");
+        printStatsSummary();
+        state.endGame();
+    }
+
+    private void printLoseScreen(String reason) {
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║               GAME OVER                  ║");
+        System.out.println("╚══════════════════════════════════════════╝");
+        System.out.println("  Reason  : " + reason);
+        printStatsSummary();
+        state.endGame();
+    }
+
+    private void printStatsSummary() {
+        System.out.println();
+        System.out.println("  --- Final Stats ---");
+        System.out.println("  Days Survived  : " + state.getDay());
+        System.out.printf("  Fund Remaining : $%,d%n", state.getFund());
+        System.out.println("  Team Morale    : " + state.getMorale() + "/100");
+        System.out.println("  Team Energy    : " + state.getEnergy() + "/100");
+        System.out.println("  Progress       : " + buildProgressBar(state.getProgress()));
+        System.out.println("  --------------------");
     }
 
     private String buildProgressBar(int progress) {
