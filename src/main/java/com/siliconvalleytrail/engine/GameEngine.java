@@ -12,6 +12,7 @@ public class GameEngine {
     private final GameState state;
     private final Scanner scanner;
     private final MilestoneTracker milestoneTracker = new MilestoneTracker();
+    private final EventEngine eventEngine;
 
     private static final List<Choice> DAILY_CHOICES = Arrays.asList(
         new Choice("Sprint       - Push the team hard to move faster",  -3000, -10, -20, +15),
@@ -22,11 +23,13 @@ public class GameEngine {
     public GameEngine(Scanner scanner) {
         this.state = new GameState();
         this.scanner = scanner;
+        this.eventEngine = new EventEngine(scanner);
     }
 
     public GameEngine(GameState state, Scanner scanner) {
         this.state = state;
         this.scanner = scanner;
+        this.eventEngine = new EventEngine(scanner);
     }
 
     public void start() {
@@ -43,6 +46,7 @@ public class GameEngine {
         if (choice == null) return;
 
         applyChoice(choice);
+        eventEngine.triggerDailyEvent(state);
         milestoneTracker.check(state);
 
         checkLoseConditions();
