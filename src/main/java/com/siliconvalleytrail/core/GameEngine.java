@@ -93,7 +93,11 @@ public class GameEngine {
         System.out.println("What does your team do today?");
         System.out.println();
         for (int i = 0; i < DAILY_CHOICES.size(); i++) {
-            System.out.println("  " + (i + 1) + ". " + DAILY_CHOICES.get(i).getDescription());
+            Choice choice = DAILY_CHOICES.get(i);
+            System.out.println("  " + (i + 1) + ". " + choice.getDescription());
+            System.out.printf("       Fund: $%,d  |  Morale: %+d  |  Energy: %+d  |  Progress: %+d%%%n",
+                choice.getFundDelta(), choice.getMoraleDelta(), choice.getEnergyDelta(), choice.getProgressDelta());
+            System.out.println();
         }
         System.out.println("  4. Exit Game");
         System.out.println();
