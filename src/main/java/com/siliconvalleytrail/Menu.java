@@ -1,9 +1,6 @@
 package com.siliconvalleytrail;
 
 import com.siliconvalleytrail.commands.Command;
-import com.siliconvalleytrail.commands.LoadGameCommand;
-import com.siliconvalleytrail.commands.NewGameCommand;
-import com.siliconvalleytrail.commands.QuitCommand;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,9 +13,6 @@ public class Menu {
 
     public Menu(Scanner scanner) {
         this.scanner = scanner;
-        addOption("1", new NewGameCommand(scanner));
-        addOption("2", new LoadGameCommand());
-        addOption("3", new QuitCommand());
     }
 
     public void addOption(String key, Command command) {

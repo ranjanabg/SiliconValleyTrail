@@ -1,5 +1,7 @@
 package com.siliconvalleytrail.engine;
 
+import com.siliconvalleytrail.save.SaveManager;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -11,6 +13,8 @@ public class GameEngine {
 
     private final GameState state;
     private final Scanner scanner;
+    private final SaveManager saveManager;
+    private final String userId;
     private final MilestoneTracker milestoneTracker = new MilestoneTracker();
     private final EventEngine eventEngine;
 
@@ -20,15 +24,19 @@ public class GameEngine {
         new Choice("Rest Day     - Let the team recover",               -1000, +20, +25,   0)
     );
 
-    public GameEngine(Scanner scanner) {
+    public GameEngine(Scanner scanner, SaveManager saveManager, String userId) {
         this.state = new GameState();
         this.scanner = scanner;
+        this.saveManager = saveManager;
+        this.userId = userId;
         this.eventEngine = new EventEngine(scanner);
     }
 
-    public GameEngine(GameState state, Scanner scanner) {
+    public GameEngine(GameState state, Scanner scanner, SaveManager saveManager, String userId) {
         this.state = state;
         this.scanner = scanner;
+        this.saveManager = saveManager;
+        this.userId = userId;
         this.eventEngine = new EventEngine(scanner);
     }
 
@@ -50,17 +58,20 @@ public class GameEngine {
         milestoneTracker.check(state);
 
         checkLoseConditions();
-        if (state.isGameOver()) return;
+        if (state.isGameOver()) {
+            saveManager.deleteSave(userId);
+            return;
+        }
 
         checkWinCondition();
-        if (state.isGameOver()) return;
+        if (state.isGameOver()) {
+            saveManager.deleteSave(userId);
+            return;
+        }
 
-        pause();
         state.advanceDay();
-    }
-
-    public boolean isGameOver() {
-        return state.isGameOver();
+        saveManager.save(userId, state);
+        pause();
     }
 
     private void printDayHeader() {
@@ -147,7 +158,7 @@ public class GameEngine {
 
     private void pause() {
         System.out.println();
-        System.out.print("Press Enter to continue to Day " + (state.getDay() + 1) + "...");
+        System.out.print("Press Enter to continue to Day " + state.getDay() + "...");
         scanner.nextLine();
     }
 }

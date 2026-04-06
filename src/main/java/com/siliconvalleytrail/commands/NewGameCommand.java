@@ -1,17 +1,20 @@
 package com.siliconvalleytrail.commands;
 
 import com.siliconvalleytrail.engine.GameEngine;
-import com.siliconvalleytrail.engine.GameState;
-
+import com.siliconvalleytrail.save.SaveManager;
 
 import java.util.Scanner;
 
 public class NewGameCommand implements Command {
 
     private final Scanner scanner;
+    private final SaveManager saveManager;
+    private final String userId;
 
-    public NewGameCommand(Scanner scanner) {
+    public NewGameCommand(Scanner scanner, SaveManager saveManager, String userId) {
         this.scanner = scanner;
+        this.saveManager = saveManager;
+        this.userId = userId;
     }
 
     @Override
@@ -37,7 +40,6 @@ public class NewGameCommand implements Command {
         System.out.println("  Progress     : Reach 100% to make it to Silicon Valley");
         System.out.println("---------------------");
 
-        GameEngine engine = new GameEngine(scanner);
-        engine.start();
+        new GameEngine(scanner, saveManager, userId).start();
     }
 }
