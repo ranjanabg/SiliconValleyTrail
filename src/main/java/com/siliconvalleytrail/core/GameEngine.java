@@ -84,7 +84,7 @@ public class GameEngine {
         System.out.printf("  Fund         : $%,d%n", state.getFund());
         System.out.println("  Team Morale  : " + state.getMorale() + "/100");
         System.out.println("  Team Energy  : " + state.getEnergy() + "/100");
-        System.out.println("  Journey      : " + SOURCE + " --[" + state.getProgress() + "%]--> " + DESTINATION);
+        System.out.println("  Journey      : " + SOURCE + " " + buildProgressBar(state.getProgress()) + " " + DESTINATION);
         System.out.println("==========================================");
         System.out.println();
     }
@@ -160,6 +160,12 @@ public class GameEngine {
             System.out.println("╚══════════════════════════════════════════╝");
             state.endGame();
         }
+    }
+
+    private String buildProgressBar(int progress) {
+        int filled = progress / 10;
+        int empty = 10 - filled;
+        return "[" + "█".repeat(filled) + "░".repeat(empty) + "] " + progress + "%";
     }
 
     private void pause() {
