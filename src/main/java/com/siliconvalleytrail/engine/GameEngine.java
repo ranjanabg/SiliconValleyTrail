@@ -11,6 +11,7 @@ public class GameEngine {
 
     private final GameState state;
     private final Scanner scanner;
+    private final MilestoneTracker milestoneTracker = new MilestoneTracker();
 
     private static final List<Choice> DAILY_CHOICES = Arrays.asList(
         new Choice("Sprint       - Push the team hard to move faster",  -3000, -10, -20, +15),
@@ -42,6 +43,7 @@ public class GameEngine {
         if (choice == null) return;
 
         applyChoice(choice);
+        milestoneTracker.check(state);
 
         checkLoseConditions();
         if (state.isGameOver()) return;
