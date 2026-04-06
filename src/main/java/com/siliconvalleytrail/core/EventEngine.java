@@ -23,7 +23,7 @@ public class EventEngine {
         RandomEvent event = DAILY_EVENT;
 
         System.out.println();
-        System.out.println("[ Event ] " + event.getDescription());
+        System.out.println("🎲 Event: " + event.getDescription());
         System.out.println("  Fund change    : $" + String.format("%,d", event.getFundDelta()));
         System.out.println("  Morale change  : " + event.getMoraleDelta());
         System.out.println("  Energy change  : " + event.getEnergyDelta());

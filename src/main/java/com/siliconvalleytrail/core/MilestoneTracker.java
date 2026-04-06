@@ -50,7 +50,7 @@ public class MilestoneTracker {
 
     private void printMilestone(Milestone milestone) {
         System.out.println();
-        System.out.println("*** MILESTONE REACHED: " + milestone.getCityName() + " ***");
+        System.out.println("📍 MILESTONE REACHED: " + milestone.getCityName());
         System.out.println(milestone.getStoryMoment());
         System.out.println();
         System.out.println("  Milestone Bonus:");

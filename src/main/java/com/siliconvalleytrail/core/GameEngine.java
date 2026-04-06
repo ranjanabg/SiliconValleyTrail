@@ -22,9 +22,9 @@ public class GameEngine {
     private boolean playerExited = false;
 
     private static final List<Choice> DAILY_CHOICES = Arrays.asList(
-        new Choice("Sprint       - Push the team hard to move faster",  -3000, -10, -20, +15),
-        new Choice("Steady Pace  - Move at a sustainable speed",        -2000,  -5, -10,  +8),
-        new Choice("Rest Day     - Let the team recover",               -1000, +20, +25,   0)
+        new Choice("🏃 Sprint       - Push the team hard to move faster",  -3000, -10, -20, +15),
+        new Choice("🚶 Steady Pace  - Move at a sustainable speed",        -2000,  -5, -10,  +8),
+        new Choice("😴 Rest Day     - Let the team recover",               -1000, +20, +25,   0)
     );
 
     public GameEngine(Scanner scanner, SaveManager saveManager, String userId) {
@@ -88,12 +88,15 @@ public class GameEngine {
     private void printDayHeader() {
         System.out.println();
         System.out.println("==========================================");
-        System.out.println("  Day " + state.getDay());
+        System.out.println("  ☀️  Day " + state.getDay());
         System.out.println("==========================================");
-        System.out.printf("  Fund         : $%,d%n", state.getFund());
-        System.out.println("  Team Morale  : " + state.getMorale() + "/100");
-        System.out.println("  Team Energy  : " + state.getEnergy() + "/100");
-        System.out.println("  Journey      : " + SOURCE + " " + buildProgressBar(state.getProgress()) + " " + DESTINATION);
+        String fundEmoji = state.getFund() < 10000 ? "💸" : "💰";
+        System.out.printf("  " + fundEmoji + " Fund         : $%,d%n", state.getFund());
+        String moraleEmoji = state.getMorale() < 20 ? "😞" : "😊";
+        String energyEmoji = state.getEnergy() < 20 ? "🪫" : "🔋";
+        System.out.println("  " + moraleEmoji + " Team Morale  : " + state.getMorale() + "/100");
+        System.out.println("  " + energyEmoji + " Team Energy  : " + state.getEnergy() + "/100");
+        System.out.println("  🗺️  Journey      : " + SOURCE + " " + buildProgressBar(state.getProgress()) + " " + DESTINATION);
         System.out.println("==========================================");
         System.out.println();
     }
@@ -108,7 +111,7 @@ public class GameEngine {
                 choice.getFundDelta(), choice.getMoraleDelta(), choice.getEnergyDelta(), choice.getProgressDelta());
             System.out.println();
         }
-        System.out.println("  4. Exit Game");
+        System.out.println("  4. 👋 Exit Game");
         System.out.println();
     }
 
@@ -164,7 +167,7 @@ public class GameEngine {
     private void printWinScreen() {
         System.out.println();
         System.out.println("╔══════════════════════════════════════════╗");
-        System.out.println("║       YOU MADE IT TO SAN FRANCISCO!      ║");
+        System.out.println("║  🎉  YOU MADE IT TO SAN FRANCISCO!  🎉  ║");
         System.out.println("║     Your startup journey is complete!    ║");
         System.out.println("╚══════════════════════════════════════════╝");
         printStatsSummary();
@@ -174,7 +177,7 @@ public class GameEngine {
     private void printLoseScreen(String reason) {
         System.out.println();
         System.out.println("╔══════════════════════════════════════════╗");
-        System.out.println("║               GAME OVER                  ║");
+        System.out.println("║           💀  GAME OVER  💀              ║");
         System.out.println("╚══════════════════════════════════════════╝");
         System.out.println("  Reason  : " + reason);
         printStatsSummary();
@@ -200,7 +203,7 @@ public class GameEngine {
 
     private boolean promptRestart() {
         System.out.println();
-        System.out.print("Would you like to play again? (y/n): ");
+        System.out.print("🔄 Would you like to play again? (y/n): ");
         String input = scanner.nextLine().trim().toLowerCase();
         return input.equals("y") || input.equals("yes");
     }
