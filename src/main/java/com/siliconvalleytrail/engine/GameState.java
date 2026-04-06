@@ -1,5 +1,8 @@
 package com.siliconvalleytrail.engine;
 
+import lombok.Getter;
+
+@Getter
 public class GameState {
 
     private int day = 1;
@@ -16,13 +19,6 @@ public class GameState {
 
     public void advanceDay() { day++; }
     public void endGame() { gameOver = true; }
-
-    public int getDay() { return day; }
-    public int getFund() { return fund; }
-    public int getMorale() { return morale; }
-    public int getEnergy() { return energy; }
-    public int getProgress() { return progress; }
-    public boolean isGameOver() { return gameOver; }
 
     private int clamp(int value, int min, int max) {
         return Math.max(min, Math.min(max, value));

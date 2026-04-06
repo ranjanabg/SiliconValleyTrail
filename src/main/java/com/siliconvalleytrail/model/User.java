@@ -1,9 +1,12 @@
 package com.siliconvalleytrail.model;
 
+import lombok.Getter;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class User {
 
     private final String userId;
@@ -21,9 +24,4 @@ public class User {
     public static User createNew(String userId) {
         return new User(userId, UserRole.FOUNDER, new ArrayList<>(), Instant.now().toString());
     }
-
-    public String getUserId() { return userId; }
-    public UserRole getRole() { return role; }
-    public List<TeamMember> getTeam() { return team; }
-    public String getCreatedAt() { return createdAt; }
 }
