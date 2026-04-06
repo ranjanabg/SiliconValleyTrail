@@ -18,9 +18,20 @@ public class GameEngine {
         new Choice("Rest Day     - Let the team recover",               -1000, +20, +25,   0)
     );
 
+    public GameEngine(Scanner scanner) {
+        this.state = new GameState();
+        this.scanner = scanner;
+    }
+
     public GameEngine(GameState state, Scanner scanner) {
         this.state = state;
         this.scanner = scanner;
+    }
+
+    public void start() {
+        while (!state.isGameOver()) {
+            runDay();
+        }
     }
 
     public void runDay() {

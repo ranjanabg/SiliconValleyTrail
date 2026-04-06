@@ -37,11 +37,7 @@ public class NewGameCommand implements Command {
         System.out.println("  Progress     : Reach 100% to make it to Silicon Valley");
         System.out.println("---------------------");
 
-        GameState state = new GameState();
-        GameEngine engine = new GameEngine(state, scanner);
-
-        while (!engine.isGameOver()) {
-            engine.runDay();
-        }
+        GameEngine engine = new GameEngine(scanner);
+        engine.start();
     }
 }
