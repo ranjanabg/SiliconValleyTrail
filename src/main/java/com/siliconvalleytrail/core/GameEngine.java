@@ -231,6 +231,8 @@ public class GameEngine {
         System.out.printf("  Fund Remaining : $%,d%n", state.getFund());
         System.out.println("  Team Morale    : " + state.getMorale() + "/100");
         System.out.println("  Team Energy    : " + state.getEnergy() + "/100");
+        System.out.println("  Connections    : " + state.getConnections() + "/100");
+        System.out.println("  Hype           : " + state.getHype() + "/100");
         System.out.println("  Progress       : " + buildProgressBar(state.getProgress()));
         System.out.println("  --------------------");
     }
