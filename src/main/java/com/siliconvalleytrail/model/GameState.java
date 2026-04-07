@@ -17,7 +17,7 @@ public class GameState {
     private int nextMilestoneIndex = 0;
     private boolean gameOver = false;
 
-    public void applyFundDelta(int delta) { fund += delta; }
+    public void applyFundDelta(int delta) { fund = Math.max(0, fund + delta); }
     public void applyMoraleDelta(int delta) { morale = clamp(morale + delta, 0, 100); }
     public void applyEnergyDelta(int delta) { energy = clamp(energy + delta, 0, 100); }
     public void applyProgressDelta(int delta) { progress = clamp(progress + delta, 0, 100); }
