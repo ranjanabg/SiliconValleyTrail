@@ -16,6 +16,8 @@ public class EventEngine {
 
     private final Scanner scanner;
     private final Random random = new Random();
+    private int lastNormalEventIndex = -1;
+    private int lastCrisisEventIndex = -1;
 
     private static final List<RandomEvent> EVENT_POOL = Arrays.asList(
 
@@ -217,9 +219,21 @@ public class EventEngine {
 
     private RandomEvent selectEvent(GameState state) {
         if (state.getTechDebt() > TECH_DEBT_CRISIS_THRESHOLD && random.nextDouble() < CRISIS_TRIGGER_CHANCE) {
-            return CRISIS_POOL.get(random.nextInt(CRISIS_POOL.size()));
+            int index = pickDifferentIndex(CRISIS_POOL.size(), lastCrisisEventIndex);
+            lastCrisisEventIndex = index;
+            return CRISIS_POOL.get(index);
         }
-        return EVENT_POOL.get(random.nextInt(EVENT_POOL.size()));
+        int index = pickDifferentIndex(EVENT_POOL.size(), lastNormalEventIndex);
+        lastNormalEventIndex = index;
+        return EVENT_POOL.get(index);
+    }
+
+    private int pickDifferentIndex(int poolSize, int lastIndex) {
+        int index = random.nextInt(poolSize);
+        if (index == lastIndex && poolSize > 1) {
+            index = (index + 1) % poolSize;
+        }
+        return index;
     }
 
     private void printEvent(RandomEvent event) {
