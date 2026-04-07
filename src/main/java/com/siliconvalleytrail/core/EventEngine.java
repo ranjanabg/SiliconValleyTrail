@@ -97,6 +97,66 @@ public class EventEngine {
             new RandomEventChoice("Acknowledge it briefly and keep moving",
                 "A quick cheer. Back to work. Morale nudges up.",
                 0, +5, 0, 0, 0, 0, 0)
+        ),
+
+        new RandomEvent(
+            "The team skipped lunch to hit a deadline. By 3pm everyone's struggling to focus.",
+            new RandomEventChoice("Order food for everyone — the team needs fuel",
+                "Pizza arrives. The afternoon suddenly looks brighter.",
+                -400, +10, +15, 0, 0, 0, 0),
+            new RandomEventChoice("Push through to the end of the day",
+                "The team finishes exhausted and irritable.",
+                0, -10, -12, 0, 0, 0, 0)
+        ),
+
+        new RandomEvent(
+            "A critical feature isn't working and it's already 11pm. The team is still at their laptops.",
+            new RandomEventChoice("Call it — everyone goes home and sleeps",
+                "Fresh eyes in the morning. The fix takes 20 minutes.",
+                0, +8, +20, -2, 0, 0, 0),
+            new RandomEventChoice("Push through until it's done",
+                "Fixed at 2am. Everyone drags themselves in late the next day.",
+                0, -12, -20, +3, 0, 0, +5)
+        ),
+
+        new RandomEvent(
+            "Two engineers had a heated argument about the architecture. The tension is palpable.",
+            new RandomEventChoice("Sit down with both of them — resolve it today",
+                "Cleared the air. The team feels closer for it.",
+                0, +12, -8, 0, 0, 0, 0),
+            new RandomEventChoice("Let them work it out themselves",
+                "The tension lingers. Work slows down.",
+                0, -15, -8, 0, 0, 0, 0)
+        ),
+
+        new RandomEvent(
+            "The team has been running on energy drinks for days. Someone raises a concern about burnout.",
+            new RandomEventChoice("Enforce a proper lunch break and early finish today",
+                "Real food and rest makes a real difference. The team feels human again.",
+                -200, +10, +20, 0, 0, 0, 0),
+            new RandomEventChoice("One more day — we're almost through this sprint",
+                "The drinks stop working. Everyone's crashing by evening.",
+                0, -8, -18, 0, 0, 0, 0)
+        ),
+
+        new RandomEvent(
+            "A well-funded competitor just launched a product similar to yours. Tech Twitter is buzzing.",
+            new RandomEventChoice("Post a public response highlighting what makes you different",
+                "The community rallies around the underdog. Hype rises.",
+                0, +5, -8, 0, +5, +12, 0),
+            new RandomEventChoice("Stay quiet and keep building",
+                "The team feels the pressure but keeps their heads down. Morale dips.",
+                0, -10, 0, 0, 0, 0, 0)
+        ),
+
+        new RandomEvent(
+            "Your first real user sent an email saying your product changed their workflow.",
+            new RandomEventChoice("Share it with the whole team — this is what it's all about",
+                "The team lights up. Everyone remembers why they started.",
+                0, +18, +10, 0, 0, +8, 0),
+            new RandomEventChoice("Note it and stay focused on the journey",
+                "A quiet smile. Back to work.",
+                0, +8, 0, 0, 0, 0, 0)
         )
     );
 
