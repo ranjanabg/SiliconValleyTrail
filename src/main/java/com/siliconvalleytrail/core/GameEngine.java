@@ -82,6 +82,7 @@ public class GameEngine {
         if (choice == null) return;
 
         applyChoice(choice);
+        milestoneTracker.check(state);
         eventEngine.triggerDailyEvent(state);
         milestoneTracker.check(state);
 
