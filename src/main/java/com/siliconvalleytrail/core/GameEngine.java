@@ -182,10 +182,20 @@ public class GameEngine {
 
         System.out.println();
         System.out.println("Your team chose: " + choice.getDescription().split("-")[0].trim());
-        System.out.println("  Fund change    : $" + String.format("%,d", choice.getFundDelta()));
-        System.out.println("  Morale change  : " + choice.getMoraleDelta());
-        System.out.println("  Energy change  : " + choice.getEnergyDelta());
-        System.out.println("  Progress change: " + choice.getProgressDelta() + "%");
+        System.out.println("  " + getChoiceNarrative(DAILY_CHOICES.indexOf(choice)));
+    }
+
+    private String getChoiceNarrative(int index) {
+        switch (index) {
+            case 0: return "The team pushes hard. Every mile counts — but so does every drop of energy.";
+            case 1: return "Measured and deliberate. Not the fastest, but the team is still standing.";
+            case 2: return "The laptops close. The team breathes. Tomorrow will be better.";
+            case 3: return "Full stomachs, clearer minds. Sometimes the best investment is a good meal.";
+            case 4: return "Laughter fills the room. The team remembers why they started this together.";
+            case 5: return "Heads down, keyboards loud. The team is in the zone and the valley is watching.";
+            case 6: return "Suits, slides, and handshakes. The pitch is done — now you wait.";
+            default: return "The team makes their move.";
+        }
     }
 
     private void checkLoseConditions() {
