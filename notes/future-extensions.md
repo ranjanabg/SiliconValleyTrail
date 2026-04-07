@@ -4,21 +4,24 @@ A running list of planned features and ideas to add to the game.
 
 ---
 
-## Daily Choices
+## V3 Planned Features
 
-Currently the game has 3 fixed choices per day related to team movement pace. Planned additions:
+### Dynamic Daily Choices
+Choices could be made context-aware — showing only a relevant subset per day or unlocking certain choices based on game state (e.g. Investor Meeting only available after reaching Palo Alto, Hackathon only available when energy > 50).
 
-- **Food Break** — Small fund cost, boosts energy and morale
-- **Team Event** — Larger fund cost, significant morale and energy boost, no progress
-- **Hackathon** — Fund cost, drains energy, big progress boost
-- **Investor Meeting** — Gains fund, drains energy, morale impact
+### Status Effects / Lingering Consequences
+Choices today carry narrative and mechanical weight into tomorrow. For example:
+- "Exhausted" state → next day's energy recovery is halved
+- "Low morale spiral" → morale drain increases for 2 days
+- "Food deprived" → energy cap temporarily reduced until a meal event triggers
 
-Each new choice just needs to be added to the `DAILY_CHOICES` list in `GameEngine.java` using the existing `Choice` constructor:
-```java
-new Choice("description", fundDelta, moraleDelta, energyDelta, progressDelta)
-```
+Requires a `StatusEffect` model (name, description, duration, stat modifier) and `GameState` to hold a list of active effects applied and ticked down each day.
 
-Longer term, choices could be made dynamic — showing only a relevant subset per day or unlocking certain choices based on game context (e.g. investor meeting only available after a certain progress milestone).
+### Public Web API Integration
+Some events trigger conditionally based on real-world live data:
+- **Weather API** — bad weather triggers a "rough commute day" energy drain event
+- **Stock market API** — market down triggers an "investor confidence drops" fund loss event
+- **News API** — tech layoff news triggers a "team is worried" morale drop event
 
 ---
 

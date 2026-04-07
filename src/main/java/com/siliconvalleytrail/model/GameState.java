@@ -13,6 +13,7 @@ public class GameState {
     private int connections = 10;
     private int hype = 10;
     private int techDebt = 0;
+    private int lastInvestorMeetingDay = -10;
     private boolean gameOver = false;
 
     public void applyFundDelta(int delta) { fund += delta; }
@@ -25,6 +26,7 @@ public class GameState {
 
     public void advanceDay() { day++; }
     public void endGame() { gameOver = true; }
+    public void recordInvestorMeeting() { lastInvestorMeetingDay = day; }
 
     public void reset() {
         day = 1;
@@ -35,6 +37,7 @@ public class GameState {
         connections = 10;
         hype = 10;
         techDebt = 0;
+        lastInvestorMeetingDay = -10;
         gameOver = false;
     }
 

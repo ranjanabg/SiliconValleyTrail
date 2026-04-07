@@ -21,10 +21,19 @@ public class GameEngine {
     private final EventEngine eventEngine;
     private boolean playerExited = false;
 
+    private static final int INVESTOR_MEETING_INDEX = 6;
+    private static final int INVESTOR_MEETING_MIN_HYPE = 25;
+    private static final int INVESTOR_MEETING_MIN_PROGRESS = 30;
+    private static final int INVESTOR_MEETING_COOLDOWN_DAYS = 5;
+
     private static final List<Choice> DAILY_CHOICES = Arrays.asList(
-        new Choice("🏃 Sprint       - Push the team hard to move faster",  -3000, -10, -20, +8, 0, 0, +15),
-        new Choice("🚶 Steady Pace  - Move at a sustainable speed",        -2000,  -5, -10, +3, 0, 0,  +5),
-        new Choice("😴 Rest Day     - Let the team recover",               -1000, +20, +25,  0, 0, 0, -10)
+        new Choice("🏃 Sprint           - Push the team hard to move faster",    -3000, -10, -20, +8,   0,  0, +15),
+        new Choice("🚶 Steady Pace      - Move at a sustainable speed",          -2000,  -5, -10, +3,   0,  0,  +5),
+        new Choice("😴 Rest Day         - Full day off, recover and clean up",   -1000, +30, +35,  0,   0,  0, -20),
+        new Choice("🍕 Food Break       - Fuel the team with a proper meal",      -800, +10, +12, +1,   0,  0,   0),
+        new Choice("🎉 Team Event       - Boost morale with a team outing",      -2000, +25, +15,  0,  +5, +5,   0),
+        new Choice("💻 Hackathon        - Public build session, high visibility",-1500,  +8, -20, +3, +10,+15, +10),
+        new Choice("🤝 Investor Meeting - Pitch for funding, costs a day",        +8000,  -5, -15,  0, +10,+10,   0)
     );
 
     public GameEngine(Scanner scanner, SaveManager saveManager, String userId) {
@@ -109,30 +118,47 @@ public class GameEngine {
         for (int i = 0; i < DAILY_CHOICES.size(); i++) {
             Choice choice = DAILY_CHOICES.get(i);
             System.out.println("  " + (i + 1) + ". " + choice.getDescription());
+            if (i == INVESTOR_MEETING_INDEX) {
+                String lockReason = getInvestorMeetingLockReason();
+                if (lockReason != null) {
+                    System.out.println("       🔒 Locked: " + lockReason);
+                    System.out.println();
+                    continue;
+                }
+            }
             System.out.printf("       Fund: $%,d  |  Morale: %+d  |  Energy: %+d  |  Progress: %+d%%%n",
                 choice.getFundDelta(), choice.getMoraleDelta(), choice.getEnergyDelta(), choice.getProgressDelta());
             System.out.println();
         }
-        System.out.println("  4. 👋 Exit Game");
+        System.out.println("  " + (DAILY_CHOICES.size() + 1) + ". 👋 Exit Game");
         System.out.println();
     }
 
     private Choice getPlayerChoice() {
+        int exitOption = DAILY_CHOICES.size() + 1;
         while (true) {
-            System.out.print("Enter your choice (1-4): ");
+            System.out.print("Enter your choice (1-" + exitOption + "): ");
             String input = scanner.nextLine().trim();
-            switch (input) {
-                case "1": case "2": case "3":
-                    return DAILY_CHOICES.get(Integer.parseInt(input) - 1);
-                case "4":
+            try {
+                int chosen = Integer.parseInt(input);
+                if (chosen >= 1 && chosen <= DAILY_CHOICES.size()) {
+                    if (chosen - 1 == INVESTOR_MEETING_INDEX) {
+                        String lockReason = getInvestorMeetingLockReason();
+                        if (lockReason != null) {
+                            System.out.println("  🔒 " + lockReason);
+                            continue;
+                        }
+                    }
+                    return DAILY_CHOICES.get(chosen - 1);
+                } else if (chosen == exitOption) {
                     System.out.println();
                     System.out.println("Exiting game. See you on the trail!");
                     playerExited = true;
                     state.endGame();
                     return null;
-                default:
-                    System.out.println("Invalid choice. Please enter 1, 2, 3, or 4.");
-            }
+                }
+            } catch (NumberFormatException ignored) {}
+            System.out.println("Invalid choice. Please enter a number between 1 and " + exitOption + ".");
         }
     }
 
@@ -144,6 +170,9 @@ public class GameEngine {
         state.applyConnectionsDelta(choice.getConnectionsDelta());
         state.applyHypeDelta(choice.getHypeDelta());
         state.applyTechDebtDelta(choice.getTechDebtDelta());
+        if (DAILY_CHOICES.indexOf(choice) == INVESTOR_MEETING_INDEX) {
+            state.recordInvestorMeeting();
+        }
 
         System.out.println();
         System.out.println("Your team chose: " + choice.getDescription().split("-")[0].trim());
@@ -204,6 +233,19 @@ public class GameEngine {
         int filled = progress / 10;
         int empty = 10 - filled;
         return "[" + "█".repeat(filled) + "░".repeat(empty) + "] " + progress + "%";
+    }
+
+    private String getInvestorMeetingLockReason() {
+        if (state.getHype() <= INVESTOR_MEETING_MIN_HYPE)
+            return "Hype too low — build your reputation first (need Hype > " + INVESTOR_MEETING_MIN_HYPE + ")";
+        if (state.getProgress() < INVESTOR_MEETING_MIN_PROGRESS)
+            return "Too early — reach Mountain View first (need Progress > " + INVESTOR_MEETING_MIN_PROGRESS + "%)";
+        int daysSinceLastMeeting = state.getDay() - state.getLastInvestorMeetingDay();
+        if (daysSinceLastMeeting < INVESTOR_MEETING_COOLDOWN_DAYS) {
+            int daysLeft = INVESTOR_MEETING_COOLDOWN_DAYS - daysSinceLastMeeting;
+            return "On cooldown — investors need time between meetings (available in " + daysLeft + " day(s))";
+        }
+        return null;
     }
 
     private boolean promptRestart() {
