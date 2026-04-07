@@ -26,7 +26,9 @@ public class SaveManager {
 
     public GameState load(String userId) {
         try (Reader reader = new FileReader(saveFile(userId))) {
-            return gson.fromJson(reader, GameState.class);
+            GameState state = gson.fromJson(reader, GameState.class);
+            state.repairMissingFields();
+            return state;
         } catch (IOException e) {
             System.err.println("Warning: could not load save — " + e.getMessage());
             return new GameState();

@@ -30,6 +30,10 @@ public class GameState {
     public void recordInvestorMeeting() { lastInvestorMeetingDay = day; }
     public void advanceMilestone() { nextMilestoneIndex++; }
 
+    public void repairMissingFields() {
+        if (lastInvestorMeetingDay == 0) lastInvestorMeetingDay = -10;
+    }
+
     public void reset() {
         day = 1;
         fund = 50000;
