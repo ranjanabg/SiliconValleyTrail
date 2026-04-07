@@ -6,7 +6,7 @@ import lombok.Getter;
 public class GameState {
 
     private int day = 1;
-    private int fund = 80000;
+    private int fund = 50000;
     private int morale = 100;
     private int energy = 100;
     private int progress = 0;
@@ -28,7 +28,7 @@ public class GameState {
 
     public void reset() {
         day = 1;
-        fund = 80000;
+        fund = 50000;
         morale = 100;
         energy = 100;
         progress = 0;

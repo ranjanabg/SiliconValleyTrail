@@ -22,9 +22,9 @@ public class GameEngine {
     private boolean playerExited = false;
 
     private static final List<Choice> DAILY_CHOICES = Arrays.asList(
-        new Choice("🏃 Sprint       - Push the team hard to move faster",  -3000, -10, -20, +15, 0, 0, +15),
-        new Choice("🚶 Steady Pace  - Move at a sustainable speed",        -2000,  -5, -10,  +8, 0, 0,  +5),
-        new Choice("😴 Rest Day     - Let the team recover",               -1000, +20, +25,   0, 0, 0, -10)
+        new Choice("🏃 Sprint       - Push the team hard to move faster",  -3000, -10, -20, +8, 0, 0, +15),
+        new Choice("🚶 Steady Pace  - Move at a sustainable speed",        -2000,  -5, -10, +3, 0, 0,  +5),
+        new Choice("😴 Rest Day     - Let the team recover",               -1000, +20, +25,  0, 0, 0, -10)
     );
 
     public GameEngine(Scanner scanner, SaveManager saveManager, String userId) {
