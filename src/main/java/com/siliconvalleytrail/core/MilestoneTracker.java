@@ -61,20 +61,16 @@ public class MilestoneTracker {
         )
     );
 
-    private int nextMilestoneIndex = 0;
-
-    public void reset() {
-        nextMilestoneIndex = 0;
-    }
+    public void reset() {}
 
     public void check(GameState state) {
-        while (nextMilestoneIndex < milestones.size() &&
-               state.getProgress() >= milestones.get(nextMilestoneIndex).getProgressThreshold()) {
+        while (state.getNextMilestoneIndex() < milestones.size() &&
+               state.getProgress() >= milestones.get(state.getNextMilestoneIndex()).getProgressThreshold()) {
 
-            Milestone milestone = milestones.get(nextMilestoneIndex);
+            Milestone milestone = milestones.get(state.getNextMilestoneIndex());
             printMilestone(milestone);
             applyBonus(milestone, state);
-            nextMilestoneIndex++;
+            state.advanceMilestone();
         }
     }
 
