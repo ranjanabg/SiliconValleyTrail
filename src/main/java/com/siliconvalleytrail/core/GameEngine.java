@@ -21,6 +21,14 @@ public class GameEngine {
     private final EventEngine eventEngine;
     private boolean playerExited = false;
 
+    private static final int TEAM_EVENT_INDEX = 4;
+    private static final int TEAM_EVENT_MIN_FUND = 10000;
+    private static final int TEAM_EVENT_MAX_MORALE = 70;
+
+    private static final int HACKATHON_INDEX = 5;
+    private static final int HACKATHON_MIN_ENERGY = 40;
+    private static final int HACKATHON_MIN_CONNECTIONS = 25;
+
     private static final int INVESTOR_MEETING_INDEX = 6;
     private static final int INVESTOR_MEETING_MIN_HYPE = 25;
     private static final int INVESTOR_MEETING_MIN_PROGRESS = 30;
@@ -31,8 +39,8 @@ public class GameEngine {
         new Choice("🚶 Steady Pace      - Move at a sustainable speed",          -2000,  -5, -10, +3,   0,  0,  +5),
         new Choice("😴 Rest Day         - Full day off, recover and clean up",   -1000, +30, +35,  0,   0,  0, -20),
         new Choice("🍕 Food Break       - Fuel the team with a proper meal",      -800, +10, +12, +1,   0,  0,   0),
-        new Choice("🎉 Team Event       - Boost morale with a team outing",      -2000, +25, +15,  0,  +5, +5,   0),
-        new Choice("💻 Hackathon        - Public build session, high visibility",-1500,  +8, -20, +3, +10,+15, +10),
+        new Choice("🎉 Team Event       - Boost morale with a team outing",      -5000, +25, +15,  0,  +5, +5,   0),
+        new Choice("💻 Hackathon        - Public build session, high visibility",-2000,  +8, -20, +3, +10,+15, +10),
         new Choice("🤝 Investor Meeting - Pitch for funding, costs a day",        +8000,  -5, -15,  0, +10,+10,   0)
     );
 
@@ -118,13 +126,11 @@ public class GameEngine {
         for (int i = 0; i < DAILY_CHOICES.size(); i++) {
             Choice choice = DAILY_CHOICES.get(i);
             System.out.println("  " + (i + 1) + ". " + choice.getDescription());
-            if (i == INVESTOR_MEETING_INDEX) {
-                String lockReason = getInvestorMeetingLockReason();
-                if (lockReason != null) {
-                    System.out.println("       🔒 Locked: " + lockReason);
-                    System.out.println();
-                    continue;
-                }
+            String lockReason = getLockReason(i);
+            if (lockReason != null) {
+                System.out.println("       🔒 Locked: " + lockReason);
+                System.out.println();
+                continue;
             }
             System.out.printf("       Fund: $%,d  |  Morale: %+d  |  Energy: %+d  |  Progress: %+d%%%n",
                 choice.getFundDelta(), choice.getMoraleDelta(), choice.getEnergyDelta(), choice.getProgressDelta());
@@ -142,12 +148,10 @@ public class GameEngine {
             try {
                 int chosen = Integer.parseInt(input);
                 if (chosen >= 1 && chosen <= DAILY_CHOICES.size()) {
-                    if (chosen - 1 == INVESTOR_MEETING_INDEX) {
-                        String lockReason = getInvestorMeetingLockReason();
-                        if (lockReason != null) {
-                            System.out.println("  🔒 " + lockReason);
-                            continue;
-                        }
+                    String lockReason = getLockReason(chosen - 1);
+                    if (lockReason != null) {
+                        System.out.println("  🔒 " + lockReason);
+                        continue;
                     }
                     return DAILY_CHOICES.get(chosen - 1);
                 } else if (chosen == exitOption) {
@@ -173,6 +177,7 @@ public class GameEngine {
         if (DAILY_CHOICES.indexOf(choice) == INVESTOR_MEETING_INDEX) {
             state.recordInvestorMeeting();
         }
+
 
         System.out.println();
         System.out.println("Your team chose: " + choice.getDescription().split("-")[0].trim());
@@ -235,15 +240,29 @@ public class GameEngine {
         return "[" + "█".repeat(filled) + "░".repeat(empty) + "] " + progress + "%";
     }
 
-    private String getInvestorMeetingLockReason() {
-        if (state.getHype() <= INVESTOR_MEETING_MIN_HYPE)
-            return "Hype too low — build your reputation first (need Hype > " + INVESTOR_MEETING_MIN_HYPE + ")";
-        if (state.getProgress() < INVESTOR_MEETING_MIN_PROGRESS)
-            return "Too early — reach Mountain View first (need Progress > " + INVESTOR_MEETING_MIN_PROGRESS + "%)";
-        int daysSinceLastMeeting = state.getDay() - state.getLastInvestorMeetingDay();
-        if (daysSinceLastMeeting < INVESTOR_MEETING_COOLDOWN_DAYS) {
-            int daysLeft = INVESTOR_MEETING_COOLDOWN_DAYS - daysSinceLastMeeting;
-            return "On cooldown — investors need time between meetings (available in " + daysLeft + " day(s))";
+    private String getLockReason(int index) {
+        if (index == TEAM_EVENT_INDEX) {
+            if (state.getFund() <= TEAM_EVENT_MIN_FUND)
+                return "Not enough funds — need more than $" + String.format("%,d", TEAM_EVENT_MIN_FUND) + " to run a team event";
+            if (state.getMorale() >= TEAM_EVENT_MAX_MORALE)
+                return "Team morale is already high — save the budget (need Morale < " + TEAM_EVENT_MAX_MORALE + ")";
+        }
+        if (index == HACKATHON_INDEX) {
+            if (state.getEnergy() <= HACKATHON_MIN_ENERGY)
+                return "Team is too tired — rest up first (need Energy > " + HACKATHON_MIN_ENERGY + ")";
+            if (state.getConnections() <= HACKATHON_MIN_CONNECTIONS)
+                return "Not enough connections — build your network first (need Connections > " + HACKATHON_MIN_CONNECTIONS + ")";
+        }
+        if (index == INVESTOR_MEETING_INDEX) {
+            if (state.getHype() <= INVESTOR_MEETING_MIN_HYPE)
+                return "Hype too low — build your reputation first (need Hype > " + INVESTOR_MEETING_MIN_HYPE + ")";
+            if (state.getProgress() < INVESTOR_MEETING_MIN_PROGRESS)
+                return "Too early — reach Mountain View first (need Progress > " + INVESTOR_MEETING_MIN_PROGRESS + "%)";
+            int daysSinceLastMeeting = state.getDay() - state.getLastInvestorMeetingDay();
+            if (daysSinceLastMeeting < INVESTOR_MEETING_COOLDOWN_DAYS) {
+                int daysLeft = INVESTOR_MEETING_COOLDOWN_DAYS - daysSinceLastMeeting;
+                return "On cooldown — investors need time between meetings (available in " + daysLeft + " day(s))";
+            }
         }
         return null;
     }
