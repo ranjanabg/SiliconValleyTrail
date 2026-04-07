@@ -12,4 +12,6 @@ public class Milestone {
     private final int fundBonus;
     private final int moraleBonus;
     private final int energyBonus;
+    private final int connectionsBonus;
+    private final int hypeBonus;
 }
