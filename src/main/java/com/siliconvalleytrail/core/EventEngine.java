@@ -18,6 +18,8 @@ public class EventEngine {
     private final Scanner scanner;
     private final Random random = new Random();
     private final ApiEventProvider apiEventProvider = new ApiEventProvider();
+    private final ApiEffectHandler weatherHandler = new WeatherEffectHandler();
+    private final ApiEffectHandler newsHandler = new NewsEffectHandler();
     private int lastNormalEventIndex = -1;
     private int lastCrisisEventIndex = -1;
 
@@ -218,11 +220,11 @@ public class EventEngine {
         applyChoice(chosen, state);
         System.out.println("  " + chosen.getOutcome());
 
-        applyAndPrintApiEffect(apiEventProvider.getWeatherEffect(state.getProgress()), state);
+        weatherHandler.applyAndPrint(apiEventProvider.getWeatherEffect(state.getProgress()), state);
 
         ApiEffect newsEffect = apiEventProvider.getNewsEffect(state.getDay());
         if (newsEffect != null) {
-            applyAndPrintApiEffect(newsEffect, state);
+            newsHandler.applyAndPrint(newsEffect, state);
         }
     }
 
@@ -294,31 +296,4 @@ public class EventEngine {
         state.applyTechDebtDelta(choice.getTechDebtDelta());
     }
 
-    private void applyAndPrintApiEffect(ApiEffect effect, GameState state) {
-        // Skip effects with no impact (cloudy/no news fallbacks)
-        if (effect.getMoraleDelta() == 0 && effect.getEnergyDelta() == 0 &&
-            effect.getProgressDelta() == 0 && effect.getFundDelta() == 0 &&
-            effect.getHypeDelta() == 0 && effect.getConnectionsDelta() == 0) {
-            return;
-        }
-
-        System.out.println();
-        System.out.println(effect.getEmoji() + "  " + effect.getNarrative());
-
-        StringBuilder deltas = new StringBuilder("     ");
-        if (effect.getMoraleDelta() != 0)      deltas.append(String.format("Morale: %+d  ", effect.getMoraleDelta()));
-        if (effect.getEnergyDelta() != 0)      deltas.append(String.format("Energy: %+d  ", effect.getEnergyDelta()));
-        if (effect.getProgressDelta() != 0)    deltas.append(String.format("Progress: %+d%%  ", effect.getProgressDelta()));
-        if (effect.getFundDelta() != 0)        deltas.append(String.format("Fund: $%,d  ", effect.getFundDelta()));
-        if (effect.getHypeDelta() != 0)        deltas.append(String.format("Hype: %+d  ", effect.getHypeDelta()));
-        if (effect.getConnectionsDelta() != 0) deltas.append(String.format("Connections: %+d  ", effect.getConnectionsDelta()));
-        System.out.println(deltas.toString().stripTrailing());
-
-        state.applyMoraleDelta(effect.getMoraleDelta());
-        state.applyEnergyDelta(effect.getEnergyDelta());
-        state.applyProgressDelta(effect.getProgressDelta());
-        state.applyFundDelta(effect.getFundDelta());
-        state.applyHypeDelta(effect.getHypeDelta());
-        state.applyConnectionsDelta(effect.getConnectionsDelta());
-    }
 }

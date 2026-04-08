@@ -4,6 +4,8 @@ import com.siliconvalleytrail.model.ApiEffect;
 
 public class ApiEventProvider {
 
+    private static final int NEWS_COOLDOWN_DAYS = 2;
+
     private final WeatherApiClient weatherClient = new WeatherApiClient();
     private final NewsApiClient newsClient = new NewsApiClient();
 
@@ -12,6 +14,7 @@ public class ApiEventProvider {
 
     private ApiEffect cachedNewsEffect = null;
     private int cachedNewsDay = -1;
+    private int lastNewsTriggerDay = -10;
 
     public ApiEffect getWeatherEffect(int progress) {
         int currentZone = zoneForProgress(progress);
@@ -23,9 +26,11 @@ public class ApiEventProvider {
     }
 
     public ApiEffect getNewsEffect(int day) {
+        if (day - lastNewsTriggerDay <= NEWS_COOLDOWN_DAYS) return null;
         if (cachedNewsEffect == null || day != cachedNewsDay) {
             cachedNewsEffect = newsClient.fetchEffect();
             cachedNewsDay = day;
+            if (cachedNewsEffect != null) lastNewsTriggerDay = day;
         }
         return cachedNewsEffect;
     }
@@ -43,5 +48,6 @@ public class ApiEventProvider {
         cachedWeatherZone = -1;
         cachedNewsEffect = null;
         cachedNewsDay = -1;
+        lastNewsTriggerDay = -10;
     }
 }

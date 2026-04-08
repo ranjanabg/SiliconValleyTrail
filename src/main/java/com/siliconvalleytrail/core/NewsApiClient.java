@@ -33,6 +33,7 @@ public class NewsApiClient {
     private final HttpClient httpClient = HttpClient.newBuilder()
         .connectTimeout(Duration.ofSeconds(5))
         .build();
+    private int lastMockIndex = -1;
 
     public ApiEffect fetchEffect() {
         String apiKey = System.getenv("NEWS_API_KEY");
@@ -50,7 +51,7 @@ public class NewsApiClient {
             if (response.statusCode() != 200) return randomMock();
 
             NewsResponse data = gson.fromJson(response.body(), NewsResponse.class);
-            if (data.articles == null || data.articles.isEmpty()) return noEffect();
+            if (data.articles == null || data.articles.isEmpty()) return randomMock();
 
             return mapToEffect(data.articles);
 
@@ -61,7 +62,12 @@ public class NewsApiClient {
 
     private ApiEffect randomMock() {
         if (random.nextDouble() >= MOCK_TRIGGER_CHANCE) return null;
-        return MOCK_NEWS.get(random.nextInt(MOCK_NEWS.size()));
+        int index = random.nextInt(MOCK_NEWS.size());
+        if (index == lastMockIndex && MOCK_NEWS.size() > 1) {
+            index = (index + 1) % MOCK_NEWS.size();
+        }
+        lastMockIndex = index;
+        return MOCK_NEWS.get(index);
     }
 
     private ApiEffect mapToEffect(List<Article> articles) {
