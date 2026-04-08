@@ -25,13 +25,14 @@ public class WeatherApiClient {
         .connectTimeout(Duration.ofSeconds(5))
         .build();
 
-    // Mock conditions used when API key is missing or call fails
-    private static final List<ApiEffect> MOCK_CONDITIONS = Arrays.asList(
-        new ApiEffect("☀️",  "Beautiful clear day in the valley. The team feels alive.",       +3,  +5, 0,    0, 0, 0),
-        new ApiEffect("⛅",  "Overcast skies in the valley. The team stays focused.",           0,   -2,  0,    0, 0, 0),
-        new ApiEffect("🌧️", "Rain slows the commute and dampens spirits.",                    -5,  -8, -2,    0, 0, 0),
-        new ApiEffect("🌫️", "SF fog rolls in early. Visibility is poor, pace slows.",          0,  -3, -1,    0, 0, 0)
-    );
+    private List<ApiEffect> mockConditions(String city) {
+        return Arrays.asList(
+            new ApiEffect("☀️",  "Beautiful clear day in " + city + ". The team feels alive.",        +3,  +5,  0, 0, 0, 0),
+            new ApiEffect("⛅",  "Overcast skies over " + city + ". The team stays focused.",          0,   -2,  0, 0, 0, 0),
+            new ApiEffect("🌧️", "Rain in " + city + " slows the commute and dampens spirits.",       -5,   -8, -2, 0, 0, 0),
+            new ApiEffect("🌫️", "Morning fog settles over " + city + ". Visibility is poor, pace slows.", 0, -3, -1, 0, 0, 0)
+        );
+    }
 
     private static String cityForProgress(int progress) {
         if (progress < 18)  return "San+Jose,CA,US";
@@ -50,7 +51,7 @@ public class WeatherApiClient {
     public ApiEffect fetchEffect(int progress) {
         String apiKey = System.getenv("OPENWEATHER_API_KEY");
         if (apiKey == null || apiKey.isBlank()) {
-            return randomMock();
+            return randomMock(progress);
         }
         try {
             String url = API_BASE + apiKey + "&q=" + cityForProgress(progress);
@@ -61,18 +62,19 @@ public class WeatherApiClient {
                 .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() != 200) return randomMock();
+            if (response.statusCode() != 200) return randomMock(progress);
 
             WeatherResponse data = gson.fromJson(response.body(), WeatherResponse.class);
             return mapToEffect(data, displayCityForProgress(progress));
 
         } catch (Exception e) {
-            return randomMock();
+            return randomMock(progress);
         }
     }
 
-    private ApiEffect randomMock() {
-        return MOCK_CONDITIONS.get(random.nextInt(MOCK_CONDITIONS.size()));
+    private ApiEffect randomMock(int progress) {
+        List<ApiEffect> mocks = mockConditions(displayCityForProgress(progress));
+        return mocks.get(random.nextInt(mocks.size()));
     }
 
     private ApiEffect mapToEffect(WeatherResponse data, String city) {
