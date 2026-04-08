@@ -40,6 +40,13 @@ public class WeatherApiClient {
         return "San+Francisco,CA,US";
     }
 
+    private static String displayCityForProgress(int progress) {
+        if (progress < 18)  return "San Jose";
+        if (progress < 45)  return "Mountain View";
+        if (progress < 72)  return "Palo Alto";
+        return "San Francisco";
+    }
+
     public ApiEffect fetchEffect(int progress) {
         String apiKey = System.getenv("OPENWEATHER_API_KEY");
         if (apiKey == null || apiKey.isBlank()) {
@@ -57,7 +64,7 @@ public class WeatherApiClient {
             if (response.statusCode() != 200) return randomMock();
 
             WeatherResponse data = gson.fromJson(response.body(), WeatherResponse.class);
-            return mapToEffect(data);
+            return mapToEffect(data, displayCityForProgress(progress));
 
         } catch (Exception e) {
             return randomMock();
@@ -68,43 +75,43 @@ public class WeatherApiClient {
         return MOCK_CONDITIONS.get(random.nextInt(MOCK_CONDITIONS.size()));
     }
 
-    private ApiEffect mapToEffect(WeatherResponse data) {
+    private ApiEffect mapToEffect(WeatherResponse data, String city) {
         double temp = data.main != null ? data.main.temp : 20.0;
         int conditionCode = (data.weather != null && !data.weather.isEmpty())
             ? data.weather.get(0).id : 800;
 
         if (temp > HEAT_WAVE_THRESHOLD) {
             return new ApiEffect(
-                "🥵", "Brutal heat drains everyone. Someone runs out for cold drinks.",
+                "🥵", "Brutal heat in " + city + ". Someone runs out for cold drinks.",
                 0, -15, -3, -200, 0, 0
             );
         }
         if (conditionCode >= 200 && conditionCode < 300) {
             return new ApiEffect(
-                "⛈️", "Thunderstorm forces the team indoors. Progress stalls.",
+                "⛈️", "Thunderstorm in " + city + " forces the team indoors. Progress stalls.",
                 -10, -15, -5, 0, 0, 0
             );
         }
         if ((conditionCode >= 300 && conditionCode < 400) || (conditionCode >= 500 && conditionCode < 600)) {
             return new ApiEffect(
-                "🌧️", "Rain slows the commute and dampens spirits.",
+                "🌧️", "Rain in " + city + " slows the commute and dampens spirits.",
                 -5, -8, -2, 0, 0, 0
             );
         }
         if (conditionCode >= 700 && conditionCode < 800) {
             return new ApiEffect(
-                "🌫️", "SF fog rolls in early. Visibility is poor, pace slows.",
+                "🌫️", "Morning fog settles over " + city + ". Visibility is poor, pace slows.",
                 0, -3, -1, 0, 0, 0
             );
         }
         if (conditionCode == 800) {
             return new ApiEffect(
-                "☀️", "Beautiful clear day in the valley. The team feels alive.",
+                "☀️", "Beautiful clear day in " + city + ". The team feels alive.",
                 +5, +5, +1, 0, 0, 0
             );
         }
         // 801-804: Cloudy — no effect
-        return new ApiEffect("⛅", "Overcast skies in the valley. The team stays focused.", 0, 0, 0, 0, 0, 0);
+        return new ApiEffect("⛅", "Overcast skies over " + city + ". The team stays focused.", 0, 0, 0, 0, 0, 0);
     }
 
     // Internal Gson mapping classes for OpenWeatherMap response
