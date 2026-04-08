@@ -219,6 +219,11 @@ public class EventEngine {
         System.out.println("  " + chosen.getOutcome());
 
         applyAndPrintApiEffect(apiEventProvider.getWeatherEffect(state.getProgress()), state);
+
+        ApiEffect newsEffect = apiEventProvider.getNewsEffect(state.getDay());
+        if (newsEffect != null) {
+            applyAndPrintApiEffect(newsEffect, state);
+        }
     }
 
     public void resetApiCache() {
