@@ -42,6 +42,12 @@ public class NewGameCommand implements Command {
                   Team Energy  : Watch stamina — sleep deprivation and burnout end journeys
                   Progress     : Reach 100% to make it to Silicon Valley
                 ---------------------
+
+                --- The Valley is Watching ---
+                  Each day, real-world weather and tech news headlines may affect your journey.
+                  A thunderstorm could slow your progress. A funding wave could energize the team.
+                  Stay sharp — the outside world shapes your path.
+                ------------------------------
                 """);
 
         new GameEngine(scanner, saveManager, userId).start();

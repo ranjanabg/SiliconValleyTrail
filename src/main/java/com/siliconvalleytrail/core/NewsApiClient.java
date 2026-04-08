@@ -82,7 +82,7 @@ public class NewsApiClient {
                 +5, +10, +3, 0, +10, +5);
         }
 
-        return noEffect();
+        return null;
     }
 
     private boolean containsAny(String text, String... keywords) {
@@ -90,10 +90,6 @@ public class NewsApiClient {
             if (text.contains(keyword)) return true;
         }
         return false;
-    }
-
-    private ApiEffect noEffect() {
-        return new ApiEffect("📰", "The team skims the news and gets back to work.", 0, 0, 0, 0, 0, 0);
     }
 
     // Internal Gson mapping classes for NewsAPI response
