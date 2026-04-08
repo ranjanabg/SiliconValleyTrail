@@ -70,6 +70,7 @@ public class GameEngine {
             }
             state.reset();
             milestoneTracker.reset();
+            eventEngine.resetApiCache();
             playerExited = false;
         }
     }
