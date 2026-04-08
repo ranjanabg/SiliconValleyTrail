@@ -44,9 +44,11 @@ public class Menu {
     }
 
     private void welcomeMessage() {
-        System.out.println("========================================");
-        System.out.println("       Welcome to Silicon Valley Trail  ");
-        System.out.println("========================================");
-        System.out.println();
+        System.out.print("""
+                ========================================
+                       Welcome to Silicon Valley Trail
+                ========================================
+
+                """);
     }
 }

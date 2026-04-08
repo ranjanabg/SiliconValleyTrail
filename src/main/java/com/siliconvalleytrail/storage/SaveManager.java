@@ -10,7 +10,7 @@ public class SaveManager {
     private static final String SAVE_DIR = "data/saves/";
     private final Gson gson = new Gson();
 
-    public boolean hasSave(String userId) {
+    public boolean hasSave(String userId) { // prefix function name with "is"
         return saveFile(userId).exists();
     }
 

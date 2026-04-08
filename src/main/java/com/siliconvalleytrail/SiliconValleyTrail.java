@@ -26,7 +26,7 @@ public class SiliconValleyTrail {
         System.out.println("Welcome, " + user.getUserId() + "! Role: " + user.getRole());
         System.out.println();
 
-        Menu menu = new Menu(scanner);
+        final Menu menu = new Menu(scanner);
 
         if (saveManager.hasSave(userId)) {
             menu.addOption("1", new LoadGameCommand(scanner, saveManager, userId));

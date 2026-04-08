@@ -216,20 +216,24 @@ public class GameEngine {
     }
 
     private void printWinScreen() {
-        System.out.println();
-        System.out.println("╔══════════════════════════════════════════╗");
-        System.out.println("║  🎉  YOU MADE IT TO SAN FRANCISCO!  🎉  ║");
-        System.out.println("║     Your startup journey is complete!    ║");
-        System.out.println("╚══════════════════════════════════════════╝");
+        System.out.print("""
+
+                ╔══════════════════════════════════════════╗
+                ║  🎉  YOU MADE IT TO SAN FRANCISCO!  🎉  ║
+                ║     Your startup journey is complete!    ║
+                ╚══════════════════════════════════════════╝
+                """);
         printStatsSummary();
         state.endGame();
     }
 
     private void printLoseScreen(String reason) {
-        System.out.println();
-        System.out.println("╔══════════════════════════════════════════╗");
-        System.out.println("║           💀  GAME OVER  💀              ║");
-        System.out.println("╚══════════════════════════════════════════╝");
+        System.out.print("""
+
+                ╔══════════════════════════════════════════╗
+                ║           💀  GAME OVER  💀              ║
+                ╚══════════════════════════════════════════╝
+                """);
         System.out.println("  Reason  : " + reason);
         printStatsSummary();
         state.endGame();
