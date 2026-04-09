@@ -7,8 +7,17 @@ import java.io.*;
 
 public class PlayerDataStore {
 
-    private static final String SAVE_DIR = "data/saves/";
+    private static final String DEFAULT_SAVE_DIR = "data/saves/";
+    private final String saveDir;
     private final Gson gson = new Gson();
+
+    public PlayerDataStore() {
+        this.saveDir = DEFAULT_SAVE_DIR;
+    }
+
+    public PlayerDataStore(String saveDir) {
+        this.saveDir = saveDir;
+    }
 
     public boolean hasSave(String userId) {
         return saveFile(userId).exists();
@@ -40,8 +49,8 @@ public class PlayerDataStore {
         saveFile(userId).delete();
     }
 
-    // Resolves the save file path for a given player ID: data/saves/{userId}.json
+    // Resolves the save file path for a given player ID: {saveDir}/{userId}.json
     private File saveFile(String userId) {
-        return new File(SAVE_DIR + userId + ".json");
+        return new File(saveDir + userId + ".json");
     }
 }
