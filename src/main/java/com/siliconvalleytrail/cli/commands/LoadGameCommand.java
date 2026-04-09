@@ -2,17 +2,17 @@ package com.siliconvalleytrail.cli.commands;
 
 import com.siliconvalleytrail.core.GameEngine;
 import com.siliconvalleytrail.model.GameState;
-import com.siliconvalleytrail.storage.SaveManager;
+import com.siliconvalleytrail.storage.PlayerDataStore;
 
 import java.util.Scanner;
 
 public class LoadGameCommand implements Command {
 
     private final Scanner scanner;
-    private final SaveManager saveManager;
+    private final PlayerDataStore saveManager;
     private final String userId;
 
-    public LoadGameCommand(Scanner scanner, SaveManager saveManager, String userId) {
+    public LoadGameCommand(Scanner scanner, PlayerDataStore saveManager, String userId) {
         this.scanner = scanner;
         this.saveManager = saveManager;
         this.userId = userId;
@@ -28,7 +28,7 @@ public class LoadGameCommand implements Command {
         System.out.println("Resuming your saved game...");
         System.out.println();
 
-        GameState savedState = saveManager.load(userId);
+        GameState savedState = saveManager.loadPlayerData(userId);
         new GameEngine(savedState, scanner, saveManager, userId).start();
     }
 }

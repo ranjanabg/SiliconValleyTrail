@@ -5,16 +5,16 @@ import com.siliconvalleytrail.model.GameState;
 
 import java.io.*;
 
-public class SaveManager {
+public class PlayerDataStore {
 
     private static final String SAVE_DIR = "data/saves/";
     private final Gson gson = new Gson();
 
-    public boolean hasSave(String userId) { // prefix function name with "is"
+    public boolean hasSave(String userId) {
         return saveFile(userId).exists();
     }
 
-    public void save(String userId, GameState state) {
+    public void savePlayerData(String userId, GameState state) {
         File file = saveFile(userId);
         file.getParentFile().mkdirs();
         try (Writer writer = new FileWriter(file)) {
@@ -24,7 +24,7 @@ public class SaveManager {
         }
     }
 
-    public GameState load(String userId) {
+    public GameState loadPlayerData(String userId) {
         try (Reader reader = new FileReader(saveFile(userId))) {
             GameState state = gson.fromJson(reader, GameState.class);
             state.repairMissingFields();
@@ -35,10 +35,12 @@ public class SaveManager {
         }
     }
 
-    public void deleteSave(String userId) {
+    // Removes the player's save file when the game ends (win or lose)
+    public void deletePlayerData(String userId) {
         saveFile(userId).delete();
     }
 
+    // Resolves the save file path for a given player ID: data/saves/{userId}.json
     private File saveFile(String userId) {
         return new File(SAVE_DIR + userId + ".json");
     }

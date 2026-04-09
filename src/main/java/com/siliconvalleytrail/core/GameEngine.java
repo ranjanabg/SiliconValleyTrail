@@ -2,7 +2,7 @@ package com.siliconvalleytrail.core;
 
 import com.siliconvalleytrail.model.Choice;
 import com.siliconvalleytrail.model.GameState;
-import com.siliconvalleytrail.storage.SaveManager;
+import com.siliconvalleytrail.storage.PlayerDataStore;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +15,7 @@ public class GameEngine {
 
     private final GameState state;
     private final Scanner scanner;
-    private final SaveManager saveManager;
+    private final PlayerDataStore saveManager;
     private final String userId;
     private final MilestoneTracker milestoneTracker = new MilestoneTracker();
     private final EventEngine eventEngine;
@@ -44,7 +44,7 @@ public class GameEngine {
         new Choice("🤝 Investor Meeting - Pitch for funding, costs a day",        +8000,  -5, -15,  0, +10,+10,   0)
     );
 
-    public GameEngine(Scanner scanner, SaveManager saveManager, String userId) {
+    public GameEngine(Scanner scanner, PlayerDataStore saveManager, String userId) {
         this.state = new GameState();
         this.scanner = scanner;
         this.saveManager = saveManager;
@@ -52,7 +52,7 @@ public class GameEngine {
         this.eventEngine = new EventEngine(scanner);
     }
 
-    public GameEngine(GameState state, Scanner scanner, SaveManager saveManager, String userId) {
+    public GameEngine(GameState state, Scanner scanner, PlayerDataStore saveManager, String userId) {
         this.state = state;
         this.scanner = scanner;
         this.saveManager = saveManager;
@@ -89,18 +89,18 @@ public class GameEngine {
 
         checkLoseConditions();
         if (state.isGameOver()) {
-            saveManager.deleteSave(userId);
+            saveManager.deletePlayerData(userId);
             return;
         }
 
         checkWinCondition();
         if (state.isGameOver()) {
-            saveManager.deleteSave(userId);
+            saveManager.deletePlayerData(userId);
             return;
         }
 
         state.advanceDay();
-        saveManager.save(userId, state);
+        saveManager.savePlayerData(userId, state);
         pause();
     }
 

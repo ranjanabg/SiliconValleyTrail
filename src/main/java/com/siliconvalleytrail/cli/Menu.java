@@ -20,7 +20,6 @@ public class Menu {
     }
 
     public void show() {
-        welcomeMessage();
         for (Map.Entry<String, Command> entry : options.entrySet()) {
             System.out.println("  " + entry.getKey() + ". " + entry.getValue().getOptionLabel());
         }
@@ -43,12 +42,4 @@ public class Menu {
         selected.execute();
     }
 
-    private void welcomeMessage() {
-        System.out.print("""
-                ========================================
-                       Welcome to Silicon Valley Trail
-                ========================================
-
-                """);
-    }
 }

@@ -1,17 +1,17 @@
 package com.siliconvalleytrail.cli.commands;
 
 import com.siliconvalleytrail.core.GameEngine;
-import com.siliconvalleytrail.storage.SaveManager;
+import com.siliconvalleytrail.storage.PlayerDataStore;
 
 import java.util.Scanner;
 
 public class NewGameCommand implements Command {
 
     private final Scanner scanner;
-    private final SaveManager saveManager;
+    private final PlayerDataStore saveManager;
     private final String userId;
 
-    public NewGameCommand(Scanner scanner, SaveManager saveManager, String userId) {
+    public NewGameCommand(Scanner scanner, PlayerDataStore saveManager, String userId) {
         this.scanner = scanner;
         this.saveManager = saveManager;
         this.userId = userId;
