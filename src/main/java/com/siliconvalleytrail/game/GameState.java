@@ -14,6 +14,7 @@ public class GameState {
     private int hype = 10;
     private int techDebt = 0;
     private int lastInvestorMeetingDay = -10;
+    private int lastRestDay = -10;
     private int nextMilestoneIndex = 0;
     private boolean gameOver = false;
 
@@ -28,10 +29,12 @@ public class GameState {
     public void advanceDay() { day++; }
     public void endGame() { gameOver = true; }
     public void recordInvestorMeeting() { lastInvestorMeetingDay = day; }
+    public void recordRestDay() { lastRestDay = day; }
     public void advanceMilestone() { nextMilestoneIndex++; }
 
     public void repairMissingFields() {
         if (lastInvestorMeetingDay == 0) lastInvestorMeetingDay = -10;
+        if (lastRestDay == 0) lastRestDay = -10;
     }
 
     public void reset() {
@@ -44,6 +47,7 @@ public class GameState {
         hype = 10;
         techDebt = 0;
         lastInvestorMeetingDay = -10;
+        lastRestDay = -10;
         nextMilestoneIndex = 0;
         gameOver = false;
     }

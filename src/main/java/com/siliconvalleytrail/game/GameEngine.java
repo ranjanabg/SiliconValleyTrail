@@ -22,6 +22,14 @@ public class GameEngine {
     private final EventEngine eventEngine;
     private boolean returnToMenu = false;
 
+    private static final int REST_DAY_INDEX = 2;
+    private static final int REST_DAY_MIN_ENERGY = 20;
+    private static final int REST_DAY_MIN_MORALE = 20;
+    private static final int REST_DAY_COOLDOWN_DAYS = 5;
+
+    private static final int DAILY_MORALE_DRAIN = -5;
+    private static final int DAILY_OPERATING_COST = -1500;
+
     private static final int TEAM_EVENT_INDEX = 3;
     private static final int TEAM_EVENT_MIN_FUND = 10000;
     private static final int TEAM_EVENT_MAX_MORALE = 70;
@@ -83,8 +91,8 @@ public class GameEngine {
         if (choice == null) return;
 
         applyChoice(choice);
-        milestoneTracker.check(state);
         ConsoleUtils.waitForEnter();
+        milestoneTracker.check(state);
 
         eventEngine.triggerDailyEvent(state);
         milestoneTracker.check(state);
@@ -101,6 +109,7 @@ public class GameEngine {
             return;
         }
 
+        applyDailyOverhead();
         state.advanceDay();
         saveManager.savePlayerData(userId, state);
         ConsoleUtils.waitForEnter("Press Enter to continue to Day " + state.getDay() + "...");
@@ -109,7 +118,7 @@ public class GameEngine {
     private void printDayHeader() {
         System.out.println();
         System.out.println("==========================================");
-        System.out.println("  ☀️  Day " + state.getDay());
+        System.out.println("  " + eventEngine.getWeatherEmoji(state.getProgress()) + "  Day " + state.getDay());
         System.out.println("==========================================");
         final String fundEmoji = state.getFund() < 10000 ? "💸" : "💰";
         System.out.printf("  " + fundEmoji + " Fund         : $%,d%n", state.getFund());
@@ -197,6 +206,11 @@ public class GameEngine {
         }
     }
 
+    private void applyDailyOverhead() {
+        state.applyMoraleDelta(DAILY_MORALE_DRAIN);
+        state.applyFundDelta(DAILY_OPERATING_COST);
+    }
+
     private void applyChoice(Choice choice) {
         state.applyFundDelta(choice.getFundDelta());
         state.applyMoraleDelta(choice.getMoraleDelta());
@@ -207,6 +221,9 @@ public class GameEngine {
         state.applyTechDebtDelta(choice.getTechDebtDelta());
         if (DAILY_CHOICES.indexOf(choice) == INVESTOR_MEETING_INDEX) {
             state.recordInvestorMeeting();
+        }
+        if (DAILY_CHOICES.indexOf(choice) == REST_DAY_INDEX) {
+            state.recordRestDay();
         }
 
 
@@ -287,6 +304,13 @@ public class GameEngine {
     }
 
     private String getLockReason(int index) {
+        if (index == REST_DAY_INDEX) {
+            if (state.getEnergy() >= REST_DAY_MIN_ENERGY && state.getMorale() >= REST_DAY_MIN_MORALE)
+                return "Team is still going — rest when energy or morale drops below 20";
+            final int daysSinceLastRest = state.getDay() - state.getLastRestDay();
+            if (daysSinceLastRest < REST_DAY_COOLDOWN_DAYS)
+                return "Just rested — back to it (available in " + (REST_DAY_COOLDOWN_DAYS - daysSinceLastRest) + " day(s))";
+        }
         if (index == TEAM_EVENT_INDEX) {
             if (state.getFund() <= TEAM_EVENT_MIN_FUND)
                 return "Not enough funds — need more than $" + String.format("%,d", TEAM_EVENT_MIN_FUND) + " to run a team event";
