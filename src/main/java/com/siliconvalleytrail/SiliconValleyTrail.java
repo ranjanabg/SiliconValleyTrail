@@ -34,16 +34,12 @@ public class SiliconValleyTrail {
     }
 
     private static void printWelcomeIntro() {
+        ConsoleUtils.clearScreen();
         System.out.print("""
                 ========================================
                        Welcome to Silicon Valley Trail
                 ========================================
 
-                """);
-        ConsoleUtils.waitForEnter("Press Enter to begin your journey...");
-
-        ConsoleUtils.clearScreen();
-        System.out.print("""
                 It's the early days of your startup. The idea is bold, the team is hungry, and the valley is full of promise — and peril.
 
                 Your journey begins in San Jose and ends in San Francisco, 50 miles of ambition, decisions, and unpredictable twists.
@@ -58,8 +54,13 @@ public class SiliconValleyTrail {
     }
 
     private static String promptFounderName(Scanner scanner) {
-        System.out.print("There is always a brilliant mind behind every great startup. What's yours, Founder? ");
-        final String userId = scanner.nextLine().trim();
+        String userId;
+        while (true) {
+            System.out.print("There is always a brilliant mind behind every great startup. What's yours, Founder? ");
+            userId = scanner.nextLine().trim();
+            if (!userId.isEmpty()) break;
+            System.out.println("Every great founder has a name. Don't be shy — what do they call you?");
+        }
 
         final User user = User.createNew(userId);
         System.out.println();

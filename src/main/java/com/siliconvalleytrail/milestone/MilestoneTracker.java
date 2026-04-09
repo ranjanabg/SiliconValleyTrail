@@ -1,5 +1,6 @@
 package com.siliconvalleytrail.milestone;
 
+import com.siliconvalleytrail.cli.ConsoleUtils;
 import com.siliconvalleytrail.game.GameState;
 
 import java.util.Arrays;
@@ -74,6 +75,7 @@ public class MilestoneTracker {
     }
 
     private void printMilestone(Milestone milestone) {
+        ConsoleUtils.clearScreen();
         System.out.println();
         System.out.println("📍 MILESTONE REACHED: " + milestone.getCityName());
         System.out.println(milestone.getStoryMoment());
@@ -89,6 +91,7 @@ public class MilestoneTracker {
             System.out.println("    Connections : +" + milestone.getConnectionsBonus());
         if (milestone.getHypeBonus() != 0)
             System.out.println("    Hype        : +" + milestone.getHypeBonus());
+        ConsoleUtils.waitForEnter();
     }
 
     private void applyBonus(Milestone milestone, GameState state) {

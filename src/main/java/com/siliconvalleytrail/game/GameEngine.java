@@ -36,13 +36,13 @@ public class GameEngine {
     private static final int INVESTOR_MEETING_COOLDOWN_DAYS = 5;
 
     private static final List<Choice> DAILY_CHOICES = Arrays.asList(
-        new Choice("🏃 Sprint           - Push the team hard to move faster",    -3000, -10, -20, +8,   0,  0, +15),
-        new Choice("🚶 Steady Pace      - Move at a sustainable speed",          -2000,  -5, -10, +3,   0,  0,  +5),
-        new Choice("😴 Rest Day         - Full day off, recover and clean up",   -1000, +30, +35,  0,   0,  0, -20),
-        new Choice("🍕 Food Break       - Fuel the team with a proper meal",      -800, +10, +12, +1,   0,  0,   0),
+        new Choice("🏃 Sprint           - Push the team hard to move faster",    -3000, -15, -15, +7,   0,  0, +15),
+        new Choice("🚶 Steady Pace      - Move at a sustainable speed",          -2000,  -8,  -8, +3,   0,  0,  +5),
+        new Choice("🍕 Food Break       - Fuel the team with a proper meal",      -800, +10, +12,  0,   0,  0,   0),
+        new Choice("😴 Rest Day         - Full day off, recover and clean up",   -4000, +30, +35,  0,   0,  0, -20),
         new Choice("🎉 Team Event       - Boost morale with a team outing",      -5000, +25, +15,  0,  +5, +5,   0),
-        new Choice("💻 Hackathon        - Public build session, high visibility",-2000,  +8, -20, +3, +10,+15, +10),
-        new Choice("🤝 Investor Meeting - Pitch for funding, costs a day",        +8000,  -5, -15,  0, +10,+10,   0)
+        new Choice("💻 Hackathon        - Public build session, high visibility",-2000,  +8, -15,  0, +10,+15, +10),
+        new Choice("🤝 Investor Meeting - Pitch for funding, costs a day",        +6000,  -8, -10,  0, +10,+10,   0)
     );
 
     public GameEngine(Scanner scanner, PlayerDataStore saveManager, String userId) {
@@ -79,9 +79,6 @@ public class GameEngine {
     public void runDay() {
         ConsoleUtils.clearScreen();
         printDayHeader();
-        ConsoleUtils.waitForEnter("Press Enter to choose...");
-
-        ConsoleUtils.clearScreen();
         printChoices();
 
         final Choice choice = getPlayerChoice();
@@ -132,21 +129,47 @@ public class GameEngine {
     private void printChoices() {
         System.out.println("What's your call for the team today, Founder?");
         System.out.println();
+
+        final int maxVisualLen = DAILY_CHOICES.stream()
+            .mapToInt(c -> visualLength(c.getDescription())).max().orElse(0);
+
         for (int i = 0; i < DAILY_CHOICES.size(); i++) {
             final Choice choice = DAILY_CHOICES.get(i);
-            System.out.println("  " + (i + 1) + ". " + choice.getDescription());
             final String lockReason = getLockReason(i);
+            final String desc = choice.getDescription();
+            final String pad = " ".repeat(maxVisualLen - visualLength(desc) + 3);
+
             if (lockReason != null) {
-                System.out.println("       🔒 Locked: " + lockReason);
-                System.out.println();
-                continue;
+                System.out.println("  " + (i + 1) + ". " + desc + pad + "[🔒 " + lockReason + "]");
+            } else {
+                System.out.println("  " + (i + 1) + ". " + desc + pad
+                    + "[💰 " + String.format("%-10s", formatFundDelta(choice.getFundDelta()))
+                    + "  😊 " + String.format("%+3d", choice.getMoraleDelta())
+                    + "   🔋 " + String.format("%+3d", choice.getEnergyDelta())
+                    + "   🗺️  " + String.format("%+3d", choice.getProgressDelta()) + "%]");
             }
-            System.out.printf("       Fund: $%,d  |  Morale: %+d  |  Energy: %+d  |  Progress: %+d%%%n",
-                choice.getFundDelta(), choice.getMoraleDelta(), choice.getEnergyDelta(), choice.getProgressDelta());
-            System.out.println();
         }
         System.out.println("  " + (DAILY_CHOICES.size() + 1) + ". 👋 Exit Game");
         System.out.println();
+    }
+
+    // Counts terminal display columns: surrogate-pair emojis = 2 cols, variation selectors = 0, others = 1
+    private static int visualLength(String s) {
+        int width = 0;
+        int i = 0;
+        while (i < s.length()) {
+            final int cp = s.codePointAt(i);
+            if (cp != 0xFE0F && cp != 0xFE0E) {
+                width += cp > 0xFFFF ? 2 : 1;
+            }
+            i += Character.charCount(cp);
+        }
+        return width;
+    }
+
+    private String formatFundDelta(int delta) {
+        if (delta >= 0) return String.format("+$%,d", delta);
+        return String.format("-$%,d", -delta);
     }
 
     private Choice getPlayerChoice() {
@@ -197,8 +220,8 @@ public class GameEngine {
         switch (index) {
             case 0: return "The team pushes hard. Every mile counts — but so does every drop of energy.";
             case 1: return "Measured and deliberate. Not the fastest, but the team is still standing.";
-            case 2: return "The laptops close. The team breathes. Tomorrow will be better.";
-            case 3: return "Full stomachs, clearer minds. Sometimes the best investment is a good meal.";
+            case 2: return "Full stomachs, clearer minds. Sometimes the best investment is a good meal.";
+            case 3: return "The laptops close. The team breathes. Tomorrow will be better.";
             case 4: return "Laughter fills the room. The team remembers why they started this together.";
             case 5: return "Heads down, keyboards loud. The team is in the zone and the valley is watching.";
             case 6: return "Suits, slides, and handshakes. The pitch is done — now you wait.";
