@@ -32,7 +32,7 @@ public class GameEngine {
 
     private static final int TEAM_EVENT_INDEX = 3;
     private static final int TEAM_EVENT_MIN_FUND = 10000;
-    private static final int TEAM_EVENT_MAX_MORALE = 70;
+    private static final int TEAM_EVENT_MAX_MORALE = 20;
 
     private static final int HACKATHON_INDEX = 4;
     private static final int HACKATHON_MIN_ENERGY = 40;
@@ -47,7 +47,7 @@ public class GameEngine {
         new Choice("🏃 Sprint           - Push the team hard to move faster",    -3000, -15, -15, +7,   0,  0, +15),
         new Choice("🚶 Steady Pace      - Move at a sustainable speed",          -2000,  -8,  -8, +3,   0,  0,  +5),
         new Choice("😴 Rest Day         - Full day off, recover and clean up",   -4000, +30, +35,  0,   0,  0, -20),
-        new Choice("🎉 Team Event       - Boost morale with a team outing",      -5000, +25, +15,  0,  +5, +5,   0),
+        new Choice("🎉 Team Event       - Boost morale with a team outing",      -5000, +25, +15,  0,   0, +5,   0),
         new Choice("💻 Hackathon        - Public build session, high visibility",-2000,  +8, -15,  0, +10,+15, +10),
         new Choice("🤝 Investor Meeting - Pitch for funding, costs a day",        +6000,  -8, -10,  0, +10,+10,   0)
     );
@@ -149,11 +149,17 @@ public class GameEngine {
             if (lockReason != null) {
                 System.out.println("  " + (i + 1) + ". " + desc + pad + "[🔒 " + lockReason + "]");
             } else {
-                System.out.println("  " + (i + 1) + ". " + desc + pad
-                    + "[💰 " + String.format("%-10s", formatFundDelta(choice.getFundDelta()))
-                    + "  😊 " + String.format("%+3d", choice.getMoraleDelta())
-                    + "   🔋 " + String.format("%+3d", choice.getEnergyDelta())
-                    + "   🗺️  " + String.format("%+3d", choice.getProgressDelta()) + "%]");
+                final StringBuilder bracket = new StringBuilder();
+                bracket.append("[💰 ").append(String.format("%-10s", formatFundDelta(choice.getFundDelta())));
+                bracket.append("  😊 ").append(String.format("%+3d", choice.getMoraleDelta()));
+                bracket.append("   🔋 ").append(String.format("%+3d", choice.getEnergyDelta()));
+                bracket.append("   🗺️  ").append(String.format("%+3d", choice.getProgressDelta())).append("%");
+                if (choice.getConnectionsDelta() != 0)
+                    bracket.append("   🤝 ").append(String.format("%+3d", choice.getConnectionsDelta()));
+                if (choice.getHypeDelta() != 0)
+                    bracket.append("   🔥 ").append(String.format("%+3d", choice.getHypeDelta()));
+                bracket.append("]");
+                System.out.println("  " + (i + 1) + ". " + desc + pad + bracket);
             }
         }
         System.out.println("  " + (DAILY_CHOICES.size() + 1) + ". 💾 Save & Return to Main Menu");
@@ -315,7 +321,7 @@ public class GameEngine {
             if (state.getFund() <= TEAM_EVENT_MIN_FUND)
                 return "Not enough funds — need more than $" + String.format("%,d", TEAM_EVENT_MIN_FUND) + " to run a team event";
             if (state.getMorale() >= TEAM_EVENT_MAX_MORALE)
-                return "Team morale is already high — save the budget (need Morale < " + TEAM_EVENT_MAX_MORALE + ")";
+                return "Team morale is still strong — save the budget (need Morale < " + TEAM_EVENT_MAX_MORALE + ")";
         }
         if (index == HACKATHON_INDEX) {
             if (state.getEnergy() <= HACKATHON_MIN_ENERGY)
