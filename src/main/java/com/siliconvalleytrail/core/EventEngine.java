@@ -1,5 +1,6 @@
 package com.siliconvalleytrail.core;
 
+import com.siliconvalleytrail.cli.ConsoleUtils;
 import com.siliconvalleytrail.model.ApiEffect;
 import com.siliconvalleytrail.model.GameState;
 import com.siliconvalleytrail.model.RandomEvent;
@@ -214,17 +215,23 @@ public class EventEngine {
     }
 
     public void triggerDailyEvent(GameState state) {
+        ConsoleUtils.clearScreen();
         final RandomEvent event = selectEvent(state);
         printEvent(event);
         final RandomEventChoice chosen = getPlayerChoice(event);
         applyChoice(chosen, state);
         System.out.println("  " + chosen.getOutcome());
+        ConsoleUtils.waitForEnter();
 
+        ConsoleUtils.clearScreen();
         weatherHandler.applyAndPrint(apiEventProvider.getWeatherEffect(state.getProgress()), state);
+        ConsoleUtils.waitForEnter();
 
         final ApiEffect newsEffect = apiEventProvider.getNewsEffect(state.getDay());
         if (newsEffect != null) {
+            ConsoleUtils.clearScreen();
             newsHandler.applyAndPrint(newsEffect, state);
+            ConsoleUtils.waitForEnter();
         }
     }
 

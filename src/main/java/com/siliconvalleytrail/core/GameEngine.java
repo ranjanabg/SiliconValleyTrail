@@ -1,5 +1,6 @@
 package com.siliconvalleytrail.core;
 
+import com.siliconvalleytrail.cli.ConsoleUtils;
 import com.siliconvalleytrail.model.Choice;
 import com.siliconvalleytrail.model.GameState;
 import com.siliconvalleytrail.storage.PlayerDataStore;
@@ -76,14 +77,20 @@ public class GameEngine {
     }
 
     public void runDay() {
+        ConsoleUtils.clearScreen();
         printDayHeader();
+        ConsoleUtils.waitForEnter("Press Enter to choose...");
+
+        ConsoleUtils.clearScreen();
         printChoices();
 
-        Choice choice = getPlayerChoice();
+        final Choice choice = getPlayerChoice();
         if (choice == null) return;
 
         applyChoice(choice);
         milestoneTracker.check(state);
+        ConsoleUtils.waitForEnter();
+
         eventEngine.triggerDailyEvent(state);
         milestoneTracker.check(state);
 
@@ -101,7 +108,7 @@ public class GameEngine {
 
         state.advanceDay();
         saveManager.savePlayerData(userId, state);
-        pause();
+        ConsoleUtils.waitForEnter("Press Enter to continue to Day " + state.getDay() + "...");
     }
 
     private void printDayHeader() {
@@ -123,7 +130,7 @@ public class GameEngine {
     }
 
     private void printChoices() {
-        System.out.println("What does your team do today?");
+        System.out.println("What's your call for the team today, Founder?");
         System.out.println();
         for (int i = 0; i < DAILY_CHOICES.size(); i++) {
             final Choice choice = DAILY_CHOICES.get(i);
@@ -182,7 +189,7 @@ public class GameEngine {
 
 
         System.out.println();
-        System.out.println("Your team chose: " + choice.getDescription().split("-")[0].trim());
+        System.out.println("You chose " + choice.getDescription().split("-")[0].trim() + " for the team today.");
         System.out.println("  " + getChoiceNarrative(DAILY_CHOICES.indexOf(choice)));
     }
 
@@ -292,9 +299,4 @@ public class GameEngine {
         return input.equals("y") || input.equals("yes");
     }
 
-    private void pause() {
-        System.out.println();
-        System.out.print("Press Enter to continue to Day " + state.getDay() + "...");
-        scanner.nextLine();
-    }
 }

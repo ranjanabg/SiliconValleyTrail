@@ -1,5 +1,6 @@
 package com.siliconvalleytrail.cli.commands;
 
+import com.siliconvalleytrail.cli.ConsoleUtils;
 import com.siliconvalleytrail.core.GameEngine;
 import com.siliconvalleytrail.storage.PlayerDataStore;
 
@@ -24,6 +25,7 @@ public class NewGameCommand implements Command {
 
     @Override
     public void execute() {
+        ConsoleUtils.clearScreen();
         System.out.println("Starting a new game...");
         System.out.print("""
 
@@ -32,8 +34,8 @@ public class NewGameCommand implements Command {
                 ╚══════════════════════════════════════════╝
 
                 """);
-        System.out.println("Your team is embarking on a journey from " + GameEngine.SOURCE);
-        System.out.println("all the way to " + GameEngine.DESTINATION + " to build the next Big thing in Silicon Valley. Good luck!");
+        System.out.println("You are leading your team on a journey from " + GameEngine.SOURCE);
+        System.out.println("all the way to " + GameEngine.DESTINATION + " to build the next big thing in Silicon Valley. Good luck, Founder!");
         System.out.print("""
 
                 --- Watch Out For ---
@@ -50,6 +52,7 @@ public class NewGameCommand implements Command {
                 ------------------------------
                 """);
 
+        ConsoleUtils.waitForEnter("Press Enter to start your journey...");
         new GameEngine(scanner, saveManager, userId).start();
     }
 }
