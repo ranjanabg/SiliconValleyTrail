@@ -22,15 +22,15 @@ public class GameEngine {
     private final EventEngine eventEngine;
     private boolean playerExited = false;
 
-    private static final int TEAM_EVENT_INDEX = 4;
+    private static final int TEAM_EVENT_INDEX = 3;
     private static final int TEAM_EVENT_MIN_FUND = 10000;
     private static final int TEAM_EVENT_MAX_MORALE = 70;
 
-    private static final int HACKATHON_INDEX = 5;
+    private static final int HACKATHON_INDEX = 4;
     private static final int HACKATHON_MIN_ENERGY = 40;
     private static final int HACKATHON_MIN_CONNECTIONS = 25;
 
-    private static final int INVESTOR_MEETING_INDEX = 6;
+    private static final int INVESTOR_MEETING_INDEX = 5;
     private static final int INVESTOR_MEETING_MIN_HYPE = 25;
     private static final int INVESTOR_MEETING_MIN_PROGRESS = 30;
     private static final int INVESTOR_MEETING_COOLDOWN_DAYS = 5;
@@ -38,7 +38,6 @@ public class GameEngine {
     private static final List<Choice> DAILY_CHOICES = Arrays.asList(
         new Choice("🏃 Sprint           - Push the team hard to move faster",    -3000, -15, -15, +7,   0,  0, +15),
         new Choice("🚶 Steady Pace      - Move at a sustainable speed",          -2000,  -8,  -8, +3,   0,  0,  +5),
-        new Choice("🍕 Food Break       - Fuel the team with a proper meal",      -800, +10, +12,  0,   0,  0,   0),
         new Choice("😴 Rest Day         - Full day off, recover and clean up",   -4000, +30, +35,  0,   0,  0, -20),
         new Choice("🎉 Team Event       - Boost morale with a team outing",      -5000, +25, +15,  0,  +5, +5,   0),
         new Choice("💻 Hackathon        - Public build session, high visibility",-2000,  +8, -15,  0, +10,+15, +10),
@@ -220,11 +219,10 @@ public class GameEngine {
         switch (index) {
             case 0: return "The team pushes hard. Every mile counts — but so does every drop of energy.";
             case 1: return "Measured and deliberate. Not the fastest, but the team is still standing.";
-            case 2: return "Full stomachs, clearer minds. Sometimes the best investment is a good meal.";
-            case 3: return "The laptops close. The team breathes. Tomorrow will be better.";
-            case 4: return "Laughter fills the room. The team remembers why they started this together.";
-            case 5: return "Heads down, keyboards loud. The team is in the zone and the valley is watching.";
-            case 6: return "Suits, slides, and handshakes. The pitch is done — now you wait.";
+            case 2: return "The laptops close. The team breathes. Tomorrow will be better.";
+            case 3: return "Laughter fills the room. The team remembers why they started this together.";
+            case 4: return "Heads down, keyboards loud. The team is in the zone and the valley is watching.";
+            case 5: return "Suits, slides, and handshakes. The pitch is done — now you wait.";
             default: return "The team makes their move.";
         }
     }
