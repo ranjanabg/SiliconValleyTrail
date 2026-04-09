@@ -20,7 +20,7 @@ public class GameEngine {
     private final String userId;
     private final MilestoneTracker milestoneTracker = new MilestoneTracker();
     private final EventEngine eventEngine;
-    private boolean playerExited = false;
+    private boolean returnToMenu = false;
 
     private static final int TEAM_EVENT_INDEX = 3;
     private static final int TEAM_EVENT_MIN_FUND = 10000;
@@ -62,16 +62,15 @@ public class GameEngine {
 
     public void start() {
         while (true) {
-            while (!state.isGameOver()) {
+            while (!state.isGameOver() && !returnToMenu) {
                 runDay();
             }
-            if (playerExited || !promptRestart()) {
+            if (returnToMenu || !promptRestart()) {
                 break;
             }
             state.reset();
             milestoneTracker.reset();
             eventEngine.resetApiCache();
-            playerExited = false;
         }
     }
 
@@ -148,7 +147,7 @@ public class GameEngine {
                     + "   🗺️  " + String.format("%+3d", choice.getProgressDelta()) + "%]");
             }
         }
-        System.out.println("  " + (DAILY_CHOICES.size() + 1) + ". 👋 Exit Game");
+        System.out.println("  " + (DAILY_CHOICES.size() + 1) + ". 💾 Save & Return to Main Menu");
         System.out.println();
     }
 
@@ -186,10 +185,11 @@ public class GameEngine {
                     }
                     return DAILY_CHOICES.get(chosen - 1);
                 } else if (chosen == exitOption) {
+                    saveManager.savePlayerData(userId, state);
                     System.out.println();
-                    System.out.println("Exiting game. See you on the trail!");
-                    playerExited = true;
-                    state.endGame();
+                    System.out.println("Game saved! Returning to main menu...");
+                    ConsoleUtils.waitForEnter();
+                    returnToMenu = true;
                     return null;
                 }
             } catch (NumberFormatException ignored) {}

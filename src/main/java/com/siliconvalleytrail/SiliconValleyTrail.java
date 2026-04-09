@@ -27,10 +27,12 @@ public class SiliconValleyTrail {
         ConsoleUtils.clearScreen();
         final String userId = promptFounderName(scanner);
 
-        ConsoleUtils.clearScreen();
-        final Menu menu = buildMenu(scanner, saveManager, userId);
-        menu.show();
-        menu.executeOption(menu.requestOption());
+        while (true) {
+            ConsoleUtils.clearScreen();
+            final Menu menu = buildMenu(scanner, saveManager, userId);
+            menu.show();
+            menu.executeOption(menu.requestOption());
+        }
     }
 
     private static void printWelcomeIntro() {
@@ -77,10 +79,10 @@ public class SiliconValleyTrail {
         if (saveManager.hasSave(userId)) {
             menu.addOption("1", new LoadGameCommand(scanner, saveManager, userId));
             menu.addOption("2", new NewGameCommand(scanner, saveManager, userId));
-            menu.addOption("3", new QuitCommand());
+            menu.addOption("3", new QuitCommand(userId));
         } else {
             menu.addOption("1", new NewGameCommand(scanner, saveManager, userId));
-            menu.addOption("2", new QuitCommand());
+            menu.addOption("2", new QuitCommand(userId));
         }
 
         return menu;
