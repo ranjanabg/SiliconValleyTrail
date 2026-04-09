@@ -3,46 +3,46 @@ package com.siliconvalleytrail.api;
 import com.siliconvalleytrail.api.news.NewsApiClient;
 import com.siliconvalleytrail.api.weather.WeatherApiClient;
 
-public class ApiEventProvider {
+public class ExternalEventProvider {
 
     private static final int NEWS_COOLDOWN_DAYS = 2;
 
     private final WeatherApiClient weatherClient;
     private final NewsApiClient newsClient;
 
-    public ApiEventProvider() {
+    public ExternalEventProvider() {
         this(new WeatherApiClient(), new NewsApiClient());
     }
 
-    ApiEventProvider(WeatherApiClient weatherClient, NewsApiClient newsClient) {
+    ExternalEventProvider(final WeatherApiClient weatherClient, final NewsApiClient newsClient) {
         this.weatherClient = weatherClient;
         this.newsClient = newsClient;
     }
 
-    private GameImpact cachedWeatherEffect = null;
+    private ExternalEvent cachedWeatherEvent = null;
     private int cachedWeatherZone = -1;
 
-    private GameImpact cachedNewsEffect = null;
+    private ExternalEvent cachedNewsEvent = null;
     private int cachedNewsDay = -1;
     private int lastNewsTriggerDay = -10;
 
-    public GameImpact getWeather(int progress) {
+    public ExternalEvent getWeather(int progress) {
         int currentZone = zoneForProgress(progress);
-        if (cachedWeatherEffect == null || currentZone != cachedWeatherZone) {
-            cachedWeatherEffect = weatherClient.fetch(progress);
+        if (cachedWeatherEvent == null || currentZone != cachedWeatherZone) {
+            cachedWeatherEvent = weatherClient.fetch(progress);
             cachedWeatherZone = currentZone;
         }
-        return cachedWeatherEffect;
+        return cachedWeatherEvent;
     }
 
-    public GameImpact getNews(int day) {
+    public ExternalEvent getNews(int day) {
         if (day - lastNewsTriggerDay <= NEWS_COOLDOWN_DAYS) return null;
-        if (cachedNewsEffect == null || day != cachedNewsDay) {
-            cachedNewsEffect = newsClient.fetch();
+        if (cachedNewsEvent == null || day != cachedNewsDay) {
+            cachedNewsEvent = newsClient.fetch();
             cachedNewsDay = day;
-            if (cachedNewsEffect != null) lastNewsTriggerDay = day;
+            if (cachedNewsEvent != null) lastNewsTriggerDay = day;
         }
-        return cachedNewsEffect;
+        return cachedNewsEvent;
     }
 
     private int zoneForProgress(int progress) {
@@ -54,9 +54,9 @@ public class ApiEventProvider {
 
     // Called on game restart to refresh API data for the new session
     public void reset() {
-        cachedWeatherEffect = null;
+        cachedWeatherEvent = null;
         cachedWeatherZone = -1;
-        cachedNewsEffect = null;
+        cachedNewsEvent = null;
         cachedNewsDay = -1;
         lastNewsTriggerDay = -10;
     }

@@ -2,7 +2,7 @@ package com.siliconvalleytrail.api.news;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import com.siliconvalleytrail.api.GameImpact;
+import com.siliconvalleytrail.api.ExternalEvent;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -19,13 +19,13 @@ public class NewsApiClient {
         "https://newsapi.org/v2/top-headlines?category=technology&pageSize=10&apiKey=";
     private static final double MOCK_TRIGGER_CHANCE = 0.25;
 
-    private static final List<GameImpact> MOCK_NEWS = Arrays.asList(
-        new GameImpact("😨", "Tech layoff headlines shake confidence across the valley.",           -10,   0, 0, 0,  -5,  0),
-        new GameImpact("😮‍💨", "Burnout stories in the news hit close to home.",                   -5, -10, 0, 0,   0,  0),
-        new GameImpact("📉", "Economic uncertainty spreads across the valley.",                     -8,  -5, 0, 0,  -5,  0),
-        new GameImpact("🚀", "An IPO story fires up the team's ambition.",                          +5,  +5, +2, 0, +8,  0),
-        new GameImpact("🤑", "A big funding round inspires the team to keep pushing.",              +8,  +5, 0, 0, +10, +5),
-        new GameImpact("🤖", "An AI breakthrough has everyone buzzing. The team stays late to experiment.", +5, +10, +3, 0, +10, +5)
+    private static final List<ExternalEvent> MOCK_NEWS = Arrays.asList(
+        new ExternalEvent("😨", "Tech layoff headlines shake confidence across the valley.",           -10,   0, 0, 0,  -5,  0),
+        new ExternalEvent("😮‍💨", "Burnout stories in the news hit close to home.",                   -5, -10, 0, 0,   0,  0),
+        new ExternalEvent("📉", "Economic uncertainty spreads across the valley.",                     -8,  -5, 0, 0,  -5,  0),
+        new ExternalEvent("🚀", "An IPO story fires up the team's ambition.",                          +5,  +5, +2, 0, +8,  0),
+        new ExternalEvent("🤑", "A big funding round inspires the team to keep pushing.",              +8,  +5, 0, 0, +10, +5),
+        new ExternalEvent("🤖", "An AI breakthrough has everyone buzzing. The team stays late to experiment.", +5, +10, +3, 0, +10, +5)
     );
 
     private final Gson gson = new Gson();
@@ -35,7 +35,7 @@ public class NewsApiClient {
         .build();
     private int lastMockIndex = -1;
 
-    public GameImpact fetch() {
+    public ExternalEvent fetch() {
         final String apiKey = System.getenv("NEWS_API_KEY");
         if (apiKey == null || apiKey.isBlank()) {
             return randomMock();
@@ -53,14 +53,14 @@ public class NewsApiClient {
             final NewsResponse data = gson.fromJson(response.body(), NewsResponse.class);
             if (data.articles == null || data.articles.isEmpty()) return randomMock();
 
-            return mapToEffect(data.articles);
+            return mapToEvent(data.articles);
 
         } catch (Exception e) {
             return randomMock();
         }
     }
 
-    private GameImpact randomMock() {
+    private ExternalEvent randomMock() {
         if (random.nextDouble() >= MOCK_TRIGGER_CHANCE) return null;
         int index = random.nextInt(MOCK_NEWS.size());
         if (index == lastMockIndex && MOCK_NEWS.size() > 1) {
@@ -70,38 +70,38 @@ public class NewsApiClient {
         return MOCK_NEWS.get(index);
     }
 
-    private GameImpact mapToEffect(List<Article> articles) {
+    private ExternalEvent mapToEvent(List<Article> articles) {
         final String combinedHeadlines = articles.stream()
             .map(a -> a.title != null ? a.title.toLowerCase() : "")
             .reduce("", (a, b) -> a + " " + b);
 
         if (containsAny(combinedHeadlines, "layoff", "layoffs", "fired", "cut jobs")) {
-            return new GameImpact("😨",
+            return new ExternalEvent("😨",
                 "Tech layoff headlines shake confidence across the valley.",
                 -10, 0, 0, 0, -5, 0);
         }
         if (containsAny(combinedHeadlines, "burnout", "mental health", "overwork")) {
-            return new GameImpact("😮‍💨",
+            return new ExternalEvent("😮‍💨",
                 "Burnout stories in the news hit close to home.",
                 -5, -10, 0, 0, 0, 0);
         }
         if (containsAny(combinedHeadlines, "recession", "crash", "downturn", "market down")) {
-            return new GameImpact("📉",
+            return new ExternalEvent("📉",
                 "Economic uncertainty spreads across the valley.",
                 -8, -5, 0, 0, -5, 0);
         }
         if (containsAny(combinedHeadlines, "ipo", "acquisition", "acquired")) {
-            return new GameImpact("🚀",
+            return new ExternalEvent("🚀",
                 "An IPO story fires up the team's ambition.",
                 +5, +5, +2, 0, +8, 0);
         }
         if (containsAny(combinedHeadlines, "funding", "raised", "series", "venture")) {
-            return new GameImpact("🤑",
+            return new ExternalEvent("🤑",
                 "A big funding round inspires the team to keep pushing.",
                 +8, +5, 0, 0, +10, +5);
         }
         if (containsAny(combinedHeadlines, "ai", "artificial intelligence", "breakthrough")) {
-            return new GameImpact("🤖",
+            return new ExternalEvent("🤖",
                 "An AI breakthrough has everyone buzzing. The team stays late to experiment.",
                 +5, +10, +3, 0, +10, +5);
         }

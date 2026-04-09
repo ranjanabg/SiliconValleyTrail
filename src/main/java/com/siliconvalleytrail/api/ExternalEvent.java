@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class GameImpact {
+public class ExternalEvent {
     private final String emoji;
     private final String narrative;
     private final int moraleDelta;
