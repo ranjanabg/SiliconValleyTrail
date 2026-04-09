@@ -8,13 +8,7 @@ Not just physically — San Francisco represents everything your startup is chas
 
 The trail between here and there is 100 miles and a hundred decisions. You'll cross Mountain View, cut through Palo Alto, and push into the city — but every mile costs money, energy, and belief. The team believes in you right now. Keep it that way.
 
-**Each day you choose how to lead:**
-- Push the team hard with a **Sprint** and move faster, but morale and energy take a hit
-- Keep a **Steady Pace** and stay sustainable, but the clock is ticking
-- Call a **Rest Day** when the team is running on empty — recover before you break
-- Run a **Team Event** to reignite belief when morale starts cracking
-- Host a **Hackathon** and let the valley watch you build — hype and connections climb
-- Take an **Investor Meeting** when you've built enough buzz to be taken seriously
+Each day you choose how to lead the team — and every choice has a cost.
 
 **But you don't control everything.**
 
