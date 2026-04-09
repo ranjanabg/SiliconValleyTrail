@@ -237,6 +237,10 @@ public class EventEngine {
         }
     }
 
+    public String getWeatherEmoji(int progress) {
+        return apiEventProvider.getWeatherEffect(progress).getEmoji();
+    }
+
     public void resetApiCache() {
         apiEventProvider.reset();
     }
