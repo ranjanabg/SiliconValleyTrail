@@ -184,13 +184,8 @@ No database, no web server, no external frameworks.
 
 ## AI Utilization
 
-This project was built with [Claude Code](https://claude.com/claude-code) (Anthropic's CLI coding assistant, powered by claude-sonnet-4-6) as a development collaborator throughout.
+[Claude Code](https://claude.com/claude-code) (Anthropic's CLI coding assistant, powered by claude-sonnet-4-6) was used in three specific areas:
 
-**How Claude Code was used:**
-- **Architecture decisions** — discussing design patterns (Command Pattern for menu, Strategy Pattern for API event handlers), storage options, and package structure
-- **Feature implementation** — writing and iterating on game mechanics (daily drains, lock conditions, rest day cooldown, milestone rewards)
-- **Refactoring** — extracting classes (`GameIntro`, `Menu` constructor), renaming for clarity (`ApiEffect` → `ExternalEvent`)
-- **Unit tests** — generating test cases for `GameState`, `GameEngine`, `EventEngine`, `ExternalEventProvider`, API handlers, and persistence
-- **Debugging** — identifying root causes of bugs (double Enter prompts, lose condition ordering, emoji alignment)
-
-All architectural decisions were made by the developer; Claude Code was used as a pair-programmer to implement, refactor, and test those decisions.
+- **Architectural decisions** — discussing design pattern options (Command Pattern for menu, Strategy Pattern for API event handlers), storage tradeoffs, and package structure, with final decisions made by the developer
+- **Unit tests** — assistance writing test cases for core mechanics (`GameState`, `GameEngine`, `EventEngine`, `ExternalEventProvider`, API handlers, persistence)
+- **Debugging** — identifying root causes of bugs encountered during development (double Enter prompts, lose condition ordering, emoji terminal alignment)
