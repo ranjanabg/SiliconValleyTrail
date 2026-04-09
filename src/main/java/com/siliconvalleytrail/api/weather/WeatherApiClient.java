@@ -2,7 +2,7 @@ package com.siliconvalleytrail.api.weather;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import com.siliconvalleytrail.api.ApiEffect;
+import com.siliconvalleytrail.api.GameImpact;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -25,12 +25,12 @@ public class WeatherApiClient {
         .connectTimeout(Duration.ofSeconds(5))
         .build();
 
-    private List<ApiEffect> mockConditions(String city) {
+    private List<GameImpact> mockConditions(String city) {
         return Arrays.asList(
-            new ApiEffect("☀️",  "Beautiful clear day in " + city + ". The team feels alive.",        +3,  +5,  0, 0, 0, 0),
-            new ApiEffect("⛅",  "Overcast skies over " + city + ". The team stays focused.",          0,   -2,  0, 0, 0, 0),
-            new ApiEffect("🌧️", "Rain in " + city + " slows the commute and dampens spirits.",       -5,   -8, -2, 0, 0, 0),
-            new ApiEffect("🌫️", "Morning fog settles over " + city + ". Visibility is poor, pace slows.", 0, -3, -1, 0, 0, 0)
+            new GameImpact("☀️",  "Beautiful clear day in " + city + ". The team feels alive.",        +3,  +5,  0, 0, 0, 0),
+            new GameImpact("⛅",  "Overcast skies over " + city + ". The team stays focused.",          0,   -2,  0, 0, 0, 0),
+            new GameImpact("🌧️", "Rain in " + city + " slows the commute and dampens spirits.",       -5,   -8, -2, 0, 0, 0),
+            new GameImpact("🌫️", "Morning fog settles over " + city + ". Visibility is poor, pace slows.", 0, -3, -1, 0, 0, 0)
         );
     }
 
@@ -48,7 +48,7 @@ public class WeatherApiClient {
         return "San Francisco";
     }
 
-    public ApiEffect fetchEffect(int progress) {
+    public GameImpact fetch(int progress) {
         final String apiKey = System.getenv("OPENWEATHER_API_KEY");
         if (apiKey == null || apiKey.isBlank()) {
             return randomMock(progress);
@@ -72,48 +72,48 @@ public class WeatherApiClient {
         }
     }
 
-    private ApiEffect randomMock(int progress) {
-        final List<ApiEffect> mocks = mockConditions(displayCityForProgress(progress));
+    private GameImpact randomMock(int progress) {
+        final List<GameImpact> mocks = mockConditions(displayCityForProgress(progress));
         return mocks.get(random.nextInt(mocks.size()));
     }
 
-    private ApiEffect mapToEffect(WeatherResponse data, String city) {
+    private GameImpact mapToEffect(WeatherResponse data, String city) {
         final double temp = data.main != null ? data.main.temp : 20.0;
         final int conditionCode = (data.weather != null && !data.weather.isEmpty())
             ? data.weather.get(0).id : 800;
 
         if (temp > HEAT_WAVE_THRESHOLD) {
-            return new ApiEffect(
+            return new GameImpact(
                 "🥵", "Brutal heat in " + city + ". Someone runs out for cold drinks.",
                 0, -15, -3, -200, 0, 0
             );
         }
         if (conditionCode >= 200 && conditionCode < 300) {
-            return new ApiEffect(
+            return new GameImpact(
                 "⛈️", "Thunderstorm in " + city + " forces the team indoors. Progress stalls.",
                 -10, -15, -5, 0, 0, 0
             );
         }
         if ((conditionCode >= 300 && conditionCode < 400) || (conditionCode >= 500 && conditionCode < 600)) {
-            return new ApiEffect(
+            return new GameImpact(
                 "🌧️", "Rain in " + city + " slows the commute and dampens spirits.",
                 -5, -8, -2, 0, 0, 0
             );
         }
         if (conditionCode >= 700 && conditionCode < 800) {
-            return new ApiEffect(
+            return new GameImpact(
                 "🌫️", "Morning fog settles over " + city + ". Visibility is poor, pace slows.",
                 0, -3, -1, 0, 0, 0
             );
         }
         if (conditionCode == 800) {
-            return new ApiEffect(
+            return new GameImpact(
                 "☀️", "Beautiful clear day in " + city + ". The team feels alive.",
                 +5, +5, +1, 0, 0, 0
             );
         }
         // 801-804: Cloudy — no effect
-        return new ApiEffect("⛅", "Overcast skies over " + city + ". The team stays focused.", 0, 0, 0, 0, 0, 0);
+        return new GameImpact("⛅", "Overcast skies over " + city + ". The team stays focused.", 0, 0, 0, 0, 0, 0);
     }
 
     // Internal Gson mapping classes for OpenWeatherMap response

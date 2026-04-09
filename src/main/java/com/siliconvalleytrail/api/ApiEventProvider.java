@@ -7,29 +7,38 @@ public class ApiEventProvider {
 
     private static final int NEWS_COOLDOWN_DAYS = 2;
 
-    private final WeatherApiClient weatherClient = new WeatherApiClient();
-    private final NewsApiClient newsClient = new NewsApiClient();
+    private final WeatherApiClient weatherClient;
+    private final NewsApiClient newsClient;
 
-    private ApiEffect cachedWeatherEffect = null;
+    public ApiEventProvider() {
+        this(new WeatherApiClient(), new NewsApiClient());
+    }
+
+    ApiEventProvider(WeatherApiClient weatherClient, NewsApiClient newsClient) {
+        this.weatherClient = weatherClient;
+        this.newsClient = newsClient;
+    }
+
+    private GameImpact cachedWeatherEffect = null;
     private int cachedWeatherZone = -1;
 
-    private ApiEffect cachedNewsEffect = null;
+    private GameImpact cachedNewsEffect = null;
     private int cachedNewsDay = -1;
     private int lastNewsTriggerDay = -10;
 
-    public ApiEffect getWeatherEffect(int progress) {
+    public GameImpact getWeather(int progress) {
         int currentZone = zoneForProgress(progress);
         if (cachedWeatherEffect == null || currentZone != cachedWeatherZone) {
-            cachedWeatherEffect = weatherClient.fetchEffect(progress);
+            cachedWeatherEffect = weatherClient.fetch(progress);
             cachedWeatherZone = currentZone;
         }
         return cachedWeatherEffect;
     }
 
-    public ApiEffect getNewsEffect(int day) {
+    public GameImpact getNews(int day) {
         if (day - lastNewsTriggerDay <= NEWS_COOLDOWN_DAYS) return null;
         if (cachedNewsEffect == null || day != cachedNewsDay) {
-            cachedNewsEffect = newsClient.fetchEffect();
+            cachedNewsEffect = newsClient.fetch();
             cachedNewsDay = day;
             if (cachedNewsEffect != null) lastNewsTriggerDay = day;
         }

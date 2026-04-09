@@ -1,10 +1,10 @@
 package com.siliconvalleytrail.events;
 
-import com.siliconvalleytrail.api.ApiEffectHandler;
+import com.siliconvalleytrail.api.GameImpactHandler;
 import com.siliconvalleytrail.api.ApiEventProvider;
-import com.siliconvalleytrail.api.ApiEffect;
-import com.siliconvalleytrail.api.news.NewsEffectHandler;
-import com.siliconvalleytrail.api.weather.WeatherEffectHandler;
+import com.siliconvalleytrail.api.GameImpact;
+import com.siliconvalleytrail.api.news.NewsImpactHandler;
+import com.siliconvalleytrail.api.weather.WeatherImpactHandler;
 import com.siliconvalleytrail.cli.ConsoleUtils;
 import com.siliconvalleytrail.game.GameState;
 
@@ -21,8 +21,8 @@ public class EventEngine {
     private final Scanner scanner;
     private final Random random = new Random();
     private final ApiEventProvider apiEventProvider = new ApiEventProvider();
-    private final ApiEffectHandler weatherHandler = new WeatherEffectHandler();
-    private final ApiEffectHandler newsHandler = new NewsEffectHandler();
+    private final GameImpactHandler weatherHandler = new WeatherImpactHandler();
+    private final GameImpactHandler newsHandler = new NewsImpactHandler();
     private int lastNormalEventIndex = -1;
     private int lastCrisisEventIndex = -1;
 
@@ -218,18 +218,21 @@ public class EventEngine {
 
     public void triggerDailyEvent(GameState state) {
         ConsoleUtils.clearScreen();
+
         final RandomEvent event = selectEvent(state);
         printEvent(event);
+
         final RandomEventChoice chosen = getPlayerChoice(event);
         applyChoice(chosen, state);
+        
         System.out.println("  " + chosen.getOutcome());
         ConsoleUtils.waitForEnter();
 
         ConsoleUtils.clearScreen();
-        weatherHandler.applyAndPrint(apiEventProvider.getWeatherEffect(state.getProgress()), state);
+        weatherHandler.applyAndPrint(apiEventProvider.getWeather(state.getProgress()), state);
         ConsoleUtils.waitForEnter();
 
-        final ApiEffect newsEffect = apiEventProvider.getNewsEffect(state.getDay());
+        final GameImpact newsEffect = apiEventProvider.getNews(state.getDay());
         if (newsEffect != null) {
             ConsoleUtils.clearScreen();
             newsHandler.applyAndPrint(newsEffect, state);
@@ -238,7 +241,7 @@ public class EventEngine {
     }
 
     public String getWeatherEmoji(int progress) {
-        return apiEventProvider.getWeatherEffect(progress).getEmoji();
+        return apiEventProvider.getWeather(progress).getEmoji();
     }
 
     public void resetApiCache() {
