@@ -28,7 +28,7 @@ public class LoadGameCommand implements Command {
         System.out.println("Resuming your saved game...");
         System.out.println();
 
-        GameState savedState = saveManager.loadPlayerData(userId);
+        final GameState savedState = saveManager.loadPlayerData(userId);
         new GameEngine(savedState, scanner, saveManager, userId).start();
     }
 }

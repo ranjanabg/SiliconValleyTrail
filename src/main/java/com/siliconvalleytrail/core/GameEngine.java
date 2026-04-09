@@ -109,10 +109,10 @@ public class GameEngine {
         System.out.println("==========================================");
         System.out.println("  ☀️  Day " + state.getDay());
         System.out.println("==========================================");
-        String fundEmoji = state.getFund() < 10000 ? "💸" : "💰";
+        final String fundEmoji = state.getFund() < 10000 ? "💸" : "💰";
         System.out.printf("  " + fundEmoji + " Fund         : $%,d%n", state.getFund());
-        String moraleEmoji = state.getMorale() < 20 ? "😞" : "😊";
-        String energyEmoji = state.getEnergy() < 20 ? "🪫" : "🔋";
+        final String moraleEmoji = state.getMorale() < 20 ? "😞" : "😊";
+        final String energyEmoji = state.getEnergy() < 20 ? "🪫" : "🔋";
         System.out.println("  " + moraleEmoji + " Team Morale  : " + state.getMorale() + "/100");
         System.out.println("  " + energyEmoji + " Team Energy  : " + state.getEnergy() + "/100");
         System.out.println("  🤝 Connections  : " + state.getConnections() + "/100");
@@ -126,9 +126,9 @@ public class GameEngine {
         System.out.println("What does your team do today?");
         System.out.println();
         for (int i = 0; i < DAILY_CHOICES.size(); i++) {
-            Choice choice = DAILY_CHOICES.get(i);
+            final Choice choice = DAILY_CHOICES.get(i);
             System.out.println("  " + (i + 1) + ". " + choice.getDescription());
-            String lockReason = getLockReason(i);
+            final String lockReason = getLockReason(i);
             if (lockReason != null) {
                 System.out.println("       🔒 Locked: " + lockReason);
                 System.out.println();
@@ -143,14 +143,14 @@ public class GameEngine {
     }
 
     private Choice getPlayerChoice() {
-        int exitOption = DAILY_CHOICES.size() + 1;
+        final int exitOption = DAILY_CHOICES.size() + 1;
         while (true) {
             System.out.print("Enter your choice (1-" + exitOption + "): ");
-            String input = scanner.nextLine().trim();
+            final String input = scanner.nextLine().trim();
             try {
-                int chosen = Integer.parseInt(input);
+                final int chosen = Integer.parseInt(input);
                 if (chosen >= 1 && chosen <= DAILY_CHOICES.size()) {
-                    String lockReason = getLockReason(chosen - 1);
+                    final String lockReason = getLockReason(chosen - 1);
                     if (lockReason != null) {
                         System.out.println("  🔒 " + lockReason);
                         continue;
@@ -253,8 +253,8 @@ public class GameEngine {
     }
 
     private String buildProgressBar(int progress) {
-        int filled = progress / 10;
-        int empty = 10 - filled;
+        final int filled = progress / 10;
+        final int empty = 10 - filled;
         return "[" + "█".repeat(filled) + "░".repeat(empty) + "] " + progress + "%";
     }
 
@@ -276,9 +276,9 @@ public class GameEngine {
                 return "Hype too low — build your reputation first (need Hype > " + INVESTOR_MEETING_MIN_HYPE + ")";
             if (state.getProgress() < INVESTOR_MEETING_MIN_PROGRESS)
                 return "Too early — reach Mountain View first (need Progress > " + INVESTOR_MEETING_MIN_PROGRESS + "%)";
-            int daysSinceLastMeeting = state.getDay() - state.getLastInvestorMeetingDay();
+            final int daysSinceLastMeeting = state.getDay() - state.getLastInvestorMeetingDay();
             if (daysSinceLastMeeting < INVESTOR_MEETING_COOLDOWN_DAYS) {
-                int daysLeft = INVESTOR_MEETING_COOLDOWN_DAYS - daysSinceLastMeeting;
+                final int daysLeft = INVESTOR_MEETING_COOLDOWN_DAYS - daysSinceLastMeeting;
                 return "On cooldown — investors need time between meetings (available in " + daysLeft + " day(s))";
             }
         }
@@ -288,7 +288,7 @@ public class GameEngine {
     private boolean promptRestart() {
         System.out.println();
         System.out.print("🔄 Would you like to play again? (y/n): ");
-        String input = scanner.nextLine().trim().toLowerCase();
+        final String input = scanner.nextLine().trim().toLowerCase();
         return input.equals("y") || input.equals("yes");
     }
 

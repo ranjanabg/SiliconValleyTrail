@@ -15,7 +15,7 @@ public class PlayerDataStore {
     }
 
     public void savePlayerData(String userId, GameState state) {
-        File file = saveFile(userId);
+        final File file = saveFile(userId);
         file.getParentFile().mkdirs();
         try (Writer writer = new FileWriter(file)) {
             gson.toJson(state, writer);

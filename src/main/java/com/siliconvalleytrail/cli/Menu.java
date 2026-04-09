@@ -32,7 +32,7 @@ public class Menu {
     }
 
     public void executeOption(String playerInput) {
-        Command selected = options.get(playerInput);
+        final Command selected = options.get(playerInput);
 
         if (selected == null) {
             System.out.println("Invalid option. Please enter a number between 1 and " + options.size() + ".");

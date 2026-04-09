@@ -49,22 +49,22 @@ public class WeatherApiClient {
     }
 
     public ApiEffect fetchEffect(int progress) {
-        String apiKey = System.getenv("OPENWEATHER_API_KEY");
+        final String apiKey = System.getenv("OPENWEATHER_API_KEY");
         if (apiKey == null || apiKey.isBlank()) {
             return randomMock(progress);
         }
         try {
-            String url = API_BASE + apiKey + "&q=" + cityForProgress(progress);
-            HttpRequest request = HttpRequest.newBuilder()
+            final String url = API_BASE + apiKey + "&q=" + cityForProgress(progress);
+            final HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .timeout(Duration.ofSeconds(5))
                 .GET()
                 .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            final HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) return randomMock(progress);
 
-            WeatherResponse data = gson.fromJson(response.body(), WeatherResponse.class);
+            final WeatherResponse data = gson.fromJson(response.body(), WeatherResponse.class);
             return mapToEffect(data, displayCityForProgress(progress));
 
         } catch (Exception e) {
@@ -73,13 +73,13 @@ public class WeatherApiClient {
     }
 
     private ApiEffect randomMock(int progress) {
-        List<ApiEffect> mocks = mockConditions(displayCityForProgress(progress));
+        final List<ApiEffect> mocks = mockConditions(displayCityForProgress(progress));
         return mocks.get(random.nextInt(mocks.size()));
     }
 
     private ApiEffect mapToEffect(WeatherResponse data, String city) {
-        double temp = data.main != null ? data.main.temp : 20.0;
-        int conditionCode = (data.weather != null && !data.weather.isEmpty())
+        final double temp = data.main != null ? data.main.temp : 20.0;
+        final int conditionCode = (data.weather != null && !data.weather.isEmpty())
             ? data.weather.get(0).id : 800;
 
         if (temp > HEAT_WAVE_THRESHOLD) {

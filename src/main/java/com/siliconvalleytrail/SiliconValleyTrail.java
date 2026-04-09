@@ -24,12 +24,12 @@ public class SiliconValleyTrail {
 
         printWelcomeIntro(scanner);
 
-        String userId = promptFounderName(scanner);
+        final String userId = promptFounderName(scanner);
 
-        List<TeamMember> teamMembers = collectTeamMembers(scanner, userId);
+        final List<TeamMember> teamMembers = collectTeamMembers(scanner, userId);
         printCrewSummary(scanner, userId, teamMembers);
 
-        Menu menu = buildMenu(scanner, saveManager, userId);
+        final Menu menu = buildMenu(scanner, saveManager, userId);
         menu.show();
         menu.executeOption(menu.requestOption());
     }
@@ -66,9 +66,9 @@ public class SiliconValleyTrail {
 
     private static String promptFounderName(Scanner scanner) {
         System.out.print("Every great startup begins with a name. What's yours, Founder? ");
-        String userId = scanner.nextLine().trim();
+        final String userId = scanner.nextLine().trim();
 
-        User user = User.createNew(userId);
+        final User user = User.createNew(userId);
         System.out.println("Welcome, " + user.getUserId() + "! Role: " + user.getRole());
         System.out.println();
 

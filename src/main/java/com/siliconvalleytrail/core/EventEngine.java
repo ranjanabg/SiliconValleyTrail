@@ -214,15 +214,15 @@ public class EventEngine {
     }
 
     public void triggerDailyEvent(GameState state) {
-        RandomEvent event = selectEvent(state);
+        final RandomEvent event = selectEvent(state);
         printEvent(event);
-        RandomEventChoice chosen = getPlayerChoice(event);
+        final RandomEventChoice chosen = getPlayerChoice(event);
         applyChoice(chosen, state);
         System.out.println("  " + chosen.getOutcome());
 
         weatherHandler.applyAndPrint(apiEventProvider.getWeatherEffect(state.getProgress()), state);
 
-        ApiEffect newsEffect = apiEventProvider.getNewsEffect(state.getDay());
+        final ApiEffect newsEffect = apiEventProvider.getNewsEffect(state.getDay());
         if (newsEffect != null) {
             newsHandler.applyAndPrint(newsEffect, state);
         }
@@ -264,7 +264,7 @@ public class EventEngine {
     }
 
     private void printChoiceDeltas(RandomEventChoice choice) {
-        StringBuilder deltas = new StringBuilder("     ");
+        final StringBuilder deltas = new StringBuilder("     ");
         if (choice.getFundDelta() != 0)        deltas.append(String.format("Fund: $%,d  ", choice.getFundDelta()));
         if (choice.getMoraleDelta() != 0)      deltas.append(String.format("Morale: %+d  ", choice.getMoraleDelta()));
         if (choice.getEnergyDelta() != 0)      deltas.append(String.format("Energy: %+d  ", choice.getEnergyDelta()));
@@ -277,7 +277,7 @@ public class EventEngine {
     private RandomEventChoice getPlayerChoice(RandomEvent event) {
         while (true) {
             System.out.print("  Your choice (A/B): ");
-            String input = scanner.nextLine().trim().toUpperCase();
+            final String input = scanner.nextLine().trim().toUpperCase();
             switch (input) {
                 case "A": return event.getChoiceA();
                 case "B": return event.getChoiceB();

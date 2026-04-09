@@ -36,21 +36,21 @@ public class NewsApiClient {
     private int lastMockIndex = -1;
 
     public ApiEffect fetchEffect() {
-        String apiKey = System.getenv("NEWS_API_KEY");
+        final String apiKey = System.getenv("NEWS_API_KEY");
         if (apiKey == null || apiKey.isBlank()) {
             return randomMock();
         }
         try {
-            HttpRequest request = HttpRequest.newBuilder()
+            final HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_URL + apiKey))
                 .timeout(Duration.ofSeconds(5))
                 .GET()
                 .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            final HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) return randomMock();
 
-            NewsResponse data = gson.fromJson(response.body(), NewsResponse.class);
+            final NewsResponse data = gson.fromJson(response.body(), NewsResponse.class);
             if (data.articles == null || data.articles.isEmpty()) return randomMock();
 
             return mapToEffect(data.articles);
@@ -71,7 +71,7 @@ public class NewsApiClient {
     }
 
     private ApiEffect mapToEffect(List<Article> articles) {
-        String combinedHeadlines = articles.stream()
+        final String combinedHeadlines = articles.stream()
             .map(a -> a.title != null ? a.title.toLowerCase() : "")
             .reduce("", (a, b) -> a + " " + b);
 
