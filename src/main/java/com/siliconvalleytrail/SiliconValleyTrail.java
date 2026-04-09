@@ -4,10 +4,9 @@ import com.siliconvalleytrail.cli.Menu;
 import com.siliconvalleytrail.cli.commands.LoadGameCommand;
 import com.siliconvalleytrail.cli.commands.NewGameCommand;
 import com.siliconvalleytrail.cli.commands.QuitCommand;
+import com.siliconvalleytrail.model.TeamMember;
 import com.siliconvalleytrail.model.User;
 import com.siliconvalleytrail.storage.PlayerDataStore;
-
-import com.siliconvalleytrail.model.TeamMember;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +22,49 @@ public class SiliconValleyTrail {
         final Scanner scanner = new Scanner(System.in);
         final PlayerDataStore saveManager = new PlayerDataStore();
 
+        printWelcomeIntro(scanner);
+
+        String userId = promptFounderName(scanner);
+
+        List<TeamMember> teamMembers = collectTeamMembers(scanner, userId);
+        printCrewSummary(scanner, userId, teamMembers);
+
+        Menu menu = buildMenu(scanner, saveManager, userId);
+        menu.show();
+        menu.executeOption(menu.requestOption());
+    }
+
+    private static void printWelcomeIntro(Scanner scanner) {
         System.out.print("""
                 ========================================
                        Welcome to Silicon Valley Trail
                 ========================================
 
                 """);
+
+        pause(scanner, "Press Enter to begin your journey...");
+
+        System.out.print("""
+
+                It's the early days of your startup. The idea is bold, the team is hungry,
+                and the valley is full of promise — and peril.
+
+                Your journey begins in San Jose and ends in San Francisco, 50 miles of
+                ambition, decisions, and unpredictable twists. Along the way, real weather
+                will batter your team, tech headlines will shake your confidence (or fuel it),
+                and every choice you make will cost you — money, energy, or morale.
+
+                Manage your team wisely. Keep the lights on. Make it to San Francisco.
+
+                The valley doesn't wait for anyone.
+
+                """);
+
+        pause(scanner, "Press Enter to meet your team...");
+        System.out.println();
+    }
+
+    private static String promptFounderName(Scanner scanner) {
         System.out.print("Every great startup begins with a name. What's yours, Founder? ");
         String userId = scanner.nextLine().trim();
 
@@ -36,7 +72,10 @@ public class SiliconValleyTrail {
         System.out.println("Welcome, " + user.getUserId() + "! Role: " + user.getRole());
         System.out.println();
 
-        List<TeamMember> teamMembers = collectTeamMembers(scanner, userId);
+        return userId;
+    }
+
+    private static void printCrewSummary(Scanner scanner, String userId, List<TeamMember> teamMembers) {
         System.out.println();
         System.out.println("Your crew is assembled, " + userId + "! " + teamMembers.size() + " brilliant minds ready to take on Silicon Valley:");
         for (TeamMember member : teamMembers) {
@@ -44,6 +83,11 @@ public class SiliconValleyTrail {
         }
         System.out.println();
 
+        pause(scanner, "Press Enter to hit the road...");
+        System.out.println();
+    }
+
+    private static Menu buildMenu(Scanner scanner, PlayerDataStore saveManager, String userId) {
         final Menu menu = new Menu(scanner);
 
         if (saveManager.hasSave(userId)) {
@@ -55,8 +99,12 @@ public class SiliconValleyTrail {
             menu.addOption("2", new QuitCommand());
         }
 
-        menu.show();
-        menu.executeOption(menu.requestOption());
+        return menu;
+    }
+
+    private static void pause(Scanner scanner, String prompt) {
+        System.out.print(prompt);
+        scanner.nextLine();
     }
 
     private static List<TeamMember> collectTeamMembers(Scanner scanner, String founderId) {
