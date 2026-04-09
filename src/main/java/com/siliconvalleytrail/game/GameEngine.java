@@ -179,7 +179,7 @@ public class GameEngine {
     }
 
     // Counts terminal display columns: surrogate-pair emojis = 2 cols, variation selectors = 0, others = 1
-    private static int visualLength(String s) {
+    static int visualLength(String s) {
         int width = 0;
         int i = 0;
         while (i < s.length()) {
@@ -262,7 +262,7 @@ public class GameEngine {
         }
     }
 
-    private void checkLoseConditions() {
+    void checkLoseConditions() {
         if (state.getFund() <= 0) {
             printLoseScreen("You ran out of funding. The journey ends here.");
         } else if (state.getMorale() <= 0) {
@@ -321,7 +321,7 @@ public class GameEngine {
         return "[" + "█".repeat(filled) + "░".repeat(empty) + "] " + progress + "%";
     }
 
-    private String getLockReason(int index) {
+    String getLockReason(int index) {
         if (index == REST_DAY_INDEX) {
             final int daysSinceLastRest = state.getDay() - state.getLastRestDay();
             if (daysSinceLastRest < REST_DAY_COOLDOWN_DAYS)
