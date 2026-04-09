@@ -1,6 +1,31 @@
 # Silicon Valley Trail
 
-A CLI-based strategy game where you lead a startup on a road trip from San Jose to San Francisco. Every day you make decisions that affect your team's morale, energy, funds, and progress — while real-world weather and tech news shape your journey.
+You are the Founder.
+
+Your startup is small, scrappy, and sitting in a co-working space in San Jose with $50,000 in the bank, a fired-up team, and one goal: make it to San Francisco.
+
+Not just physically — San Francisco represents everything your startup is chasing. The investors. The press. The credibility. The moment when people stop asking "who are you?" and start asking "how do I get in?"
+
+The trail between here and there is 100 miles and a hundred decisions. You'll cross Mountain View, cut through Palo Alto, and push into the city — but every mile costs money, energy, and belief. The team believes in you right now. Keep it that way.
+
+**Each day you choose how to lead:**
+- Push the team hard with a **Sprint** and move faster, but morale and energy take a hit
+- Keep a **Steady Pace** and stay sustainable, but the clock is ticking
+- Call a **Rest Day** when the team is running on empty — recover before you break
+- Run a **Team Event** to reignite belief when morale starts cracking
+- Host a **Hackathon** and let the valley watch you build — hype and connections climb
+- Take an **Investor Meeting** when you've built enough buzz to be taken seriously
+
+**But you don't control everything.**
+
+Every day a random event lands on your desk — a competing offer for your best engineer, a VC cold email, a critical bug in production, a journalist who wants your story. You pick A or B. There's no perfect answer.
+
+Then the real world weighs in. If it's raining in Palo Alto, the commute is rough and spirits drop. If tech layoffs are making headlines, the team gets nervous. If an AI breakthrough is all over the news, everyone stays late to experiment. Live weather and real tech headlines pulled from external APIs shape what kind of day it actually turns out to be.
+
+**You win by reaching San Francisco with your team intact.**
+You lose if you run out of money, your team quits (morale hits zero), or everyone burns out (energy hits zero).
+
+The valley doesn't wait. Neither does your runway.
 
 ---
 
