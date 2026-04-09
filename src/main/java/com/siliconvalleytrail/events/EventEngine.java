@@ -26,7 +26,7 @@ public class EventEngine {
     private int lastNormalEventIndex = -1;
     private int lastCrisisEventIndex = -1;
 
-    private static final List<RandomEvent> EVENT_POOL = Arrays.asList(
+    static final List<RandomEvent> EVENT_POOL = Arrays.asList(
 
         new RandomEvent(
             "The team spots a roadside diner. Everyone's running on fumes.",
@@ -169,7 +169,7 @@ public class EventEngine {
         )
     );
 
-    private static final List<RandomEvent> CRISIS_POOL = Arrays.asList(
+    static final List<RandomEvent> CRISIS_POOL = Arrays.asList(
 
         new RandomEvent(
             "Your app crashed during a live demo with a potential client. The technical debt caught up with you.",
@@ -248,7 +248,7 @@ public class EventEngine {
         externalEventProvider.reset();
     }
 
-    private RandomEvent selectEvent(GameState state) {
+    RandomEvent selectEvent(GameState state) {
         if (state.getTechDebt() > TECH_DEBT_CRISIS_THRESHOLD && random.nextDouble() < CRISIS_TRIGGER_CHANCE) {
             int index = pickDifferentIndex(CRISIS_POOL.size(), lastCrisisEventIndex);
             lastCrisisEventIndex = index;
@@ -259,7 +259,7 @@ public class EventEngine {
         return EVENT_POOL.get(index);
     }
 
-    private int pickDifferentIndex(int poolSize, int lastIndex) {
+    int pickDifferentIndex(int poolSize, int lastIndex) {
         int index = random.nextInt(poolSize);
         if (index == lastIndex && poolSize > 1) {
             index = (index + 1) % poolSize;
