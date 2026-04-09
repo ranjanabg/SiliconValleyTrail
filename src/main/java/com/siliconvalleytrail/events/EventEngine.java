@@ -72,7 +72,7 @@ public class EventEngine {
             "One of your best engineers just received a competing offer.",
             new RandomEventChoice("Counter-offer — stretch the budget to keep them",
                 "She stays. The team breathes a sigh of relief.",
-                -8000, +12, 0, 0, 0, 0, 0),
+                -8000, +3, 0, 0, 0, 0, 0),
             new RandomEventChoice("Wish them well — you can't match it right now",
                 "She leaves. The team feels the gap immediately.",
                 0, -15, -10, 0, -5, 0, 0)

@@ -46,7 +46,7 @@ public class GameEngine {
     private static final List<Choice> DAILY_CHOICES = Arrays.asList(
         new Choice("🏃 Sprint           - Push the team hard to move faster",    -3000, -15, -15, +7,   0,  0, +15),
         new Choice("🚶 Steady Pace      - Move at a sustainable speed",          -2000,  -8,  -8, +3,   0,  0,  +5),
-        new Choice("😴 Rest Day         - Full day off, recover and clean up",   -4000, +30, +35,  0,   0,  0, -20),
+        new Choice("😴 Rest Day         - Full day off, recover and clean up",   -4000, +10, +35,  0,   0,  0, -20),
         new Choice("🎉 Team Event       - Boost morale with a team outing",      -5000, +25, +15,  0,   0, +5,   0),
         new Choice("💻 Hackathon        - Public build session, high visibility",-2000,  +8, -15,  0, +10,+15, +10),
         new Choice("🤝 Investor Meeting - Pitch for funding, costs a day",        +6000,  -8, -10,  0, +10,+10,   0)
@@ -91,6 +91,12 @@ public class GameEngine {
         if (choice == null) return;
 
         applyChoice(choice);
+        checkLoseConditions();
+        if (state.isGameOver()) {
+            saveManager.deletePlayerData(userId);
+            return;
+        }
+
         ConsoleUtils.waitForEnter();
         milestoneTracker.check(state);
 
@@ -110,6 +116,12 @@ public class GameEngine {
         }
 
         applyDailyOverhead();
+        checkLoseConditions();
+        if (state.isGameOver()) {
+            saveManager.deletePlayerData(userId);
+            return;
+        }
+
         state.advanceDay();
         saveManager.savePlayerData(userId, state);
         ConsoleUtils.waitForEnter("Press Enter to continue to Day " + state.getDay() + "...");
@@ -311,11 +323,11 @@ public class GameEngine {
 
     private String getLockReason(int index) {
         if (index == REST_DAY_INDEX) {
-            if (state.getEnergy() >= REST_DAY_MIN_ENERGY && state.getMorale() >= REST_DAY_MIN_MORALE)
-                return "Team is still going — rest when energy or morale drops below 20";
             final int daysSinceLastRest = state.getDay() - state.getLastRestDay();
             if (daysSinceLastRest < REST_DAY_COOLDOWN_DAYS)
                 return "Just rested — back to it (available in " + (REST_DAY_COOLDOWN_DAYS - daysSinceLastRest) + " day(s))";
+            if (state.getEnergy() >= REST_DAY_MIN_ENERGY && state.getMorale() >= REST_DAY_MIN_MORALE)
+                return "Team is still going — rest when energy or morale drops below 20";
         }
         if (index == TEAM_EVENT_INDEX) {
             if (state.getFund() <= TEAM_EVENT_MIN_FUND)
