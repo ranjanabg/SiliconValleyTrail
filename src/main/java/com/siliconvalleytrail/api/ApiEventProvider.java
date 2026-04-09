@@ -1,6 +1,7 @@
-package com.siliconvalleytrail.core;
+package com.siliconvalleytrail.api;
 
-import com.siliconvalleytrail.model.ApiEffect;
+import com.siliconvalleytrail.api.news.NewsApiClient;
+import com.siliconvalleytrail.api.weather.WeatherApiClient;
 
 public class ApiEventProvider {
 

@@ -1,8 +1,8 @@
-package com.siliconvalleytrail.core;
+package com.siliconvalleytrail.api.news;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import com.siliconvalleytrail.model.ApiEffect;
+import com.siliconvalleytrail.api.ApiEffect;
 
 import java.net.URI;
 import java.net.http.HttpClient;

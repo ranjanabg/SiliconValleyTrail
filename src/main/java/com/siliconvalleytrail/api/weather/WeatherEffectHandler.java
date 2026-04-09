@@ -1,17 +1,23 @@
-package com.siliconvalleytrail.core;
+package com.siliconvalleytrail.api.weather;
 
-import com.siliconvalleytrail.model.ApiEffect;
-import com.siliconvalleytrail.model.GameState;
+import com.siliconvalleytrail.api.ApiEffect;
+import com.siliconvalleytrail.api.ApiEffectHandler;
+import com.siliconvalleytrail.game.GameState;
 
-public class NewsEffectHandler implements ApiEffectHandler {
+public class WeatherEffectHandler implements ApiEffectHandler {
 
     @Override
     public void applyAndPrint(ApiEffect effect, GameState state) {
-        if (hasNoImpact(effect)) return;
-
         System.out.println();
         System.out.println(effect.getEmoji() + "  " + effect.getNarrative());
 
+        String deltaLine = buildDeltaLine(effect);
+        if (!deltaLine.isBlank()) System.out.println(deltaLine);
+
+        applyToState(effect, state);
+    }
+
+    private String buildDeltaLine(ApiEffect effect) {
         StringBuilder deltas = new StringBuilder("     ");
         if (effect.getMoraleDelta() != 0)      deltas.append(String.format("Morale: %+d  ", effect.getMoraleDelta()));
         if (effect.getEnergyDelta() != 0)      deltas.append(String.format("Energy: %+d  ", effect.getEnergyDelta()));
@@ -19,19 +25,15 @@ public class NewsEffectHandler implements ApiEffectHandler {
         if (effect.getFundDelta() != 0)        deltas.append(String.format("Fund: $%,d  ", effect.getFundDelta()));
         if (effect.getHypeDelta() != 0)        deltas.append(String.format("Hype: %+d  ", effect.getHypeDelta()));
         if (effect.getConnectionsDelta() != 0) deltas.append(String.format("Connections: %+d  ", effect.getConnectionsDelta()));
-        System.out.println(deltas.toString().stripTrailing());
+        return deltas.toString().stripTrailing();
+    }
 
+    private void applyToState(ApiEffect effect, GameState state) {
         state.applyMoraleDelta(effect.getMoraleDelta());
         state.applyEnergyDelta(effect.getEnergyDelta());
         state.applyProgressDelta(effect.getProgressDelta());
         state.applyFundDelta(effect.getFundDelta());
         state.applyHypeDelta(effect.getHypeDelta());
         state.applyConnectionsDelta(effect.getConnectionsDelta());
-    }
-
-    private boolean hasNoImpact(ApiEffect effect) {
-        return effect.getMoraleDelta() == 0 && effect.getEnergyDelta() == 0 &&
-               effect.getProgressDelta() == 0 && effect.getFundDelta() == 0 &&
-               effect.getHypeDelta() == 0 && effect.getConnectionsDelta() == 0;
     }
 }

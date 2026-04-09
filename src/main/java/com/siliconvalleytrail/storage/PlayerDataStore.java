@@ -1,7 +1,7 @@
 package com.siliconvalleytrail.storage;
 
 import com.google.gson.Gson;
-import com.siliconvalleytrail.model.GameState;
+import com.siliconvalleytrail.game.GameState;
 
 import java.io.*;
 

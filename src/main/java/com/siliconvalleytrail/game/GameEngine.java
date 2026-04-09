@@ -1,8 +1,8 @@
-package com.siliconvalleytrail.core;
+package com.siliconvalleytrail.game;
 
 import com.siliconvalleytrail.cli.ConsoleUtils;
-import com.siliconvalleytrail.model.Choice;
-import com.siliconvalleytrail.model.GameState;
+import com.siliconvalleytrail.events.EventEngine;
+import com.siliconvalleytrail.milestone.MilestoneTracker;
 import com.siliconvalleytrail.storage.PlayerDataStore;
 
 import java.util.Arrays;

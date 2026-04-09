@@ -1,4 +1,4 @@
-package com.siliconvalleytrail.model;
+package com.siliconvalleytrail.player;
 
 import lombok.Getter;
 

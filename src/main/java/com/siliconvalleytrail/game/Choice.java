@@ -1,4 +1,4 @@
-package com.siliconvalleytrail.model;
+package com.siliconvalleytrail.game;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

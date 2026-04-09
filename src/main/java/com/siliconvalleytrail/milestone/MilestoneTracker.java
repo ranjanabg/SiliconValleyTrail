@@ -1,7 +1,6 @@
-package com.siliconvalleytrail.core;
+package com.siliconvalleytrail.milestone;
 
-import com.siliconvalleytrail.model.GameState;
-import com.siliconvalleytrail.model.Milestone;
+import com.siliconvalleytrail.game.GameState;
 
 import java.util.Arrays;
 import java.util.List;

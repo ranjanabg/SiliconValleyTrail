@@ -1,7 +1,7 @@
 package com.siliconvalleytrail.cli.commands;
 
 import com.siliconvalleytrail.cli.ConsoleUtils;
-import com.siliconvalleytrail.core.GameEngine;
+import com.siliconvalleytrail.game.GameEngine;
 import com.siliconvalleytrail.storage.PlayerDataStore;
 
 import java.util.Scanner;

@@ -1,10 +1,12 @@
-package com.siliconvalleytrail.core;
+package com.siliconvalleytrail.events;
 
+import com.siliconvalleytrail.api.ApiEffectHandler;
+import com.siliconvalleytrail.api.ApiEventProvider;
+import com.siliconvalleytrail.api.ApiEffect;
+import com.siliconvalleytrail.api.news.NewsEffectHandler;
+import com.siliconvalleytrail.api.weather.WeatherEffectHandler;
 import com.siliconvalleytrail.cli.ConsoleUtils;
-import com.siliconvalleytrail.model.ApiEffect;
-import com.siliconvalleytrail.model.GameState;
-import com.siliconvalleytrail.model.RandomEvent;
-import com.siliconvalleytrail.model.RandomEventChoice;
+import com.siliconvalleytrail.game.GameState;
 
 import java.util.Arrays;
 import java.util.List;

@@ -5,7 +5,7 @@ import com.siliconvalleytrail.cli.Menu;
 import com.siliconvalleytrail.cli.commands.LoadGameCommand;
 import com.siliconvalleytrail.cli.commands.NewGameCommand;
 import com.siliconvalleytrail.cli.commands.QuitCommand;
-import com.siliconvalleytrail.model.User;
+import com.siliconvalleytrail.player.User;
 import com.siliconvalleytrail.storage.PlayerDataStore;
 
 import java.util.Scanner;
