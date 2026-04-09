@@ -1,6 +1,10 @@
 package com.siliconvalleytrail.cli;
 
 import com.siliconvalleytrail.cli.commands.Command;
+import com.siliconvalleytrail.cli.commands.LoadGameCommand;
+import com.siliconvalleytrail.cli.commands.NewGameCommand;
+import com.siliconvalleytrail.cli.commands.QuitCommand;
+import com.siliconvalleytrail.storage.PlayerDataStore;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,12 +15,16 @@ public class Menu {
     private final Map<String, Command> options = new LinkedHashMap<>();
     private final Scanner scanner;
 
-    public Menu(Scanner scanner) {
+    public Menu(final Scanner scanner, final PlayerDataStore saveManager, final String userId) {
         this.scanner = scanner;
-    }
-
-    public void addOption(String key, Command command) {
-        options.put(key, command);
+        if (saveManager.hasSave(userId)) {
+            options.put("1", new LoadGameCommand(scanner, saveManager, userId));
+            options.put("2", new NewGameCommand(scanner, saveManager, userId));
+            options.put("3", new QuitCommand(userId));
+        } else {
+            options.put("1", new NewGameCommand(scanner, saveManager, userId));
+            options.put("2", new QuitCommand(userId));
+        }
     }
 
     public void show() {
@@ -31,7 +39,7 @@ public class Menu {
         return scanner.nextLine().trim();
     }
 
-    public void executeOption(String playerInput) {
+    public void executeOption(final String playerInput) {
         final Command selected = options.get(playerInput);
 
         if (selected == null) {
