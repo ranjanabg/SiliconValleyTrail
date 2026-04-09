@@ -114,46 +114,10 @@ java -jar target/silicon-valley-trail-1.0-SNAPSHOT.jar
 
 ---
 
-## Example Commands
+## Example Inputs
 
-**Clone and run immediately (mock mode, no API keys needed):**
-```bash
-git clone https://github.com/ranjanabg/SiliconValleyTrail.git
-cd SiliconValleyTrail
-mvn compile exec:java
-```
+Every interaction in the game is a single keypress or short text entry:
 
-**Run with real weather and news:**
-```bash
-export OPENWEATHER_API_KEY=your_key_here
-export NEWS_API_KEY=your_key_here
-mvn compile exec:java
-```
-
-**Run all tests:**
-```bash
-mvn test
-```
-
-**Run a specific test class:**
-```bash
-mvn test -Dtest=GameEngineTest
-mvn test -Dtest=GameStateTest
-mvn test -Dtest=EventEngineTest
-```
-
-**Build and run as a JAR:**
-```bash
-mvn package
-java -jar target/silicon-valley-trail-1.0-SNAPSHOT.jar
-```
-
-**Clean build:**
-```bash
-mvn clean compile
-```
-
-**Example inputs during a session:**
 ```
 What's your name, Founder? > Ranjana        # Enter your name at startup
 
