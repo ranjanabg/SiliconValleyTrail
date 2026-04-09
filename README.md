@@ -114,44 +114,54 @@ java -jar target/silicon-valley-trail-1.0-SNAPSHOT.jar
 
 ---
 
-## Example Gameplay
+## Example Commands
 
+**Clone and run immediately (mock mode, no API keys needed):**
+```bash
+git clone https://github.com/ranjanabg/SiliconValleyTrail.git
+cd SiliconValleyTrail
+mvn compile exec:java
 ```
-Enter your name: Ranjana
 
-=== Silicon Valley Trail ===
-1. New Game
-2. Load Game
-3. Quit
+**Run with real weather and news:**
+```bash
+export OPENWEATHER_API_KEY=your_key_here
+export NEWS_API_KEY=your_key_here
+mvn compile exec:java
+```
 
-> 1
+**Run all tests:**
+```bash
+mvn test
+```
 
-==========================================
-  ☀️  Day 1
-==========================================
-  💰 Fund         : $50,000
-  😊 Team Morale  : 100/100
-  🔋 Team Energy  : 100/100
-  🤝 Connections  : 10/100
-  🔥 Hype         : 10/100
-  🗺️  Journey      : San Jose [░░░░░░░░░░] San Francisco
-==========================================
+**Run a specific test class:**
+```bash
+mvn test -Dtest=GameEngineTest
+mvn test -Dtest=GameStateTest
+mvn test -Dtest=EventEngineTest
+```
 
-What's your call for the team today, Founder?
+**Build and run as a JAR:**
+```bash
+mvn package
+java -jar target/silicon-valley-trail-1.0-SNAPSHOT.jar
+```
 
-  1. 🏃 Sprint           - Push the team hard to move faster   [💰 -$3,000     😊 -15   🔋 -15   🗺️  +7%]
-  2. 🚶 Steady Pace      - Move at a sustainable speed         [💰 -$2,000     😊  -8   🔋  -8   🗺️  +3%]
-  3. 😴 Rest Day         - Full day off, recover and clean up  [🔒 Team is still going — rest when energy or morale drops below 20]
-  ...
+**Clean build:**
+```bash
+mvn clean compile
+```
 
-Enter your choice (1-7): 1
+**Example inputs during a session:**
+```
+What's your name, Founder? > Ranjana        # Enter your name at startup
 
-🎲 Event: A VC sends a cold email asking to learn more about your startup.
+Main menu option           > 1              # 1 = New Game, 2 = Load Game, 3 = Quit
 
-  A. Reply and schedule a meeting — could be big
-  B. Ignore it — stay focused on the product
+Daily choice               > 2              # Pick a numbered option (1–7)
 
-  Your choice (A/B): A
+Random event choice        > A              # A or B for each daily event
 ```
 
 ---
