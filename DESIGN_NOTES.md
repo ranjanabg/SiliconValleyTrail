@@ -76,7 +76,7 @@ The game is designed to create tension between short-term speed and long-term su
 
 ### OpenWeatherMap
 
-The game is set on a real geographic trail through Silicon Valley — San Jose, Mountain View, Palo Alto, San Francisco. These are real cities with real weather, and that's exactly why this API fits. When the game says it's raining in Palo Alto, it actually is. That connection between the real world and the game world is what makes the weather mechanic feel meaningful rather than random.
+The game is set on a real geographic trail through Silicon Valley. These are real cities with real weather, and that's exactly why this API fits. When the game says it's raining in Palo Alto, it actually is. That connection between the real world and the game world is what makes the weather mechanic feel meaningful rather than random.
 
 Weather directly influences how a startup team functions day to day. A sunny morning lifts morale naturally. A thunderstorm that kills the commute and traps everyone indoors is something every Bay Area engineer has experienced. The API lets the game reflect that lived reality — the player isn't just reading a fictional weather report, they're feeling the same conditions their real counterparts in the valley deal with.
 
@@ -119,35 +119,45 @@ News is fetched at most once every 3 days (2-day cooldown after each trigger) an
 
 ## Data Modeling
 
+The data layer is built around three deliberate separations: **state** lives in one place and is the single source of truth, **events** are a distinct concept that describe what happens and what changes, and **persistence** is fully isolated so the rest of the game never touches the file system directly.
+
 ### Game State
 
-`GameState` holds all mutable player stats as plain ints with clamped setters:
+All mutable player data lives exclusively in `GameState`. No other class holds game stats — they only call `GameState` methods to read or apply changes. This means the game's current condition is always queryable from one place, and there's no risk of stats drifting out of sync across classes.
+
+Every stat has an explicit boundary enforced at the setter level:
 
 | Field | Initial Value | Range | Notes |
 |---|---|---|---|
-| `fund` | $50,000 | min 0 | Floored at 0 — no negative balance |
-| `morale` | 100 | 0–100 | Lose if hits 0 |
-| `energy` | 100 | 0–100 | Lose if hits 0 |
-| `progress` | 0 | 0–100 | Win at 100% |
-| `connections` | 10 | 0–100 | Required for Hackathon |
-| `hype` | 10 | 0–100 | Required for Investor Meeting |
-| `techDebt` | 0 | 0–100 | Crisis events trigger above 60 |
-| `day` | 1 | — | Increments each day |
-| `lastRestDay` | -10 | — | -10 = "never rested" |
-| `lastInvestorMeetingDay` | -10 | — | -10 = "never met" |
-| `nextMilestoneIndex` | 0 | — | Pointer to next unclaimed milestone |
-| `gameOver` | false | — | Set to true on win or lose |
+| `fund` | $50,000 | min 0 | Floored at 0 — a startup can't go into negative debt in this model |
+| `morale` | 100 | 0–100 | Clamped — morale can't exceed 100 no matter how many boosts stack |
+| `energy` | 100 | 0–100 | Clamped — same as morale |
+| `progress` | 0 | 0–100 | Clamped — represents % of the trail completed |
+| `connections` | 10 | 0–100 | Starts low — must be earned through events and hackathons |
+| `hype` | 10 | 0–100 | Starts low — gates the Investor Meeting option |
+| `techDebt` | 0 | 0–100 | Accumulates from aggressive choices; crisis events fire above 60 |
+| `day` | 1 | — | Monotonically increments, never resets mid-game |
+| `lastRestDay` | -10 | — | Sentinel value: -10 means "never rested", not day 0 |
+| `lastInvestorMeetingDay` | -10 | — | Same sentinel pattern — avoids false cooldown triggers on a fresh game |
+| `nextMilestoneIndex` | 0 | — | Pointer into the milestone list; advances forward only |
+| `gameOver` | false | — | Set to true on win or lose; checked by the game loop to stop the day cycle |
+
+**Why clamping matters:** without it, a sequence of positive events could push morale to 150, making the player effectively immune to drains for many days. Clamping at 100 keeps the game in tension regardless of how many good events fire.
+
+**Why -10 for cooldown sentinels instead of 0:** cooldowns are calculated as `currentDay - lastEventDay`. If a new game starts on day 1 and `lastRestDay` defaulted to 0, the cooldown check `1 - 0 = 1` would incorrectly show a cooldown active. Starting at -10 means `1 - (-10) = 11`, well past any cooldown threshold, so the option is always available on day one.
 
 ### Events
 
-Two event types share the same `ExternalEvent` shape (emoji, narrative, stat deltas):
+Events are a distinct data concept from state — they describe *what happened* and *what changes*, but hold no persistent game data themselves. Two types:
 
-- **RandomEvent** — internal events the player actively chooses between (A/B choices, each with a `RandomEventChoice` holding deltas + outcome narrative)
-- **ExternalEvent** — API-driven events (weather, news) applied automatically via the `ExternalEventHandler` strategy interface
+- **RandomEvent** — internal events the player actively chooses between. Each has two `RandomEventChoice` objects, each holding stat deltas and an outcome narrative. The player picks A or B; the chosen deltas are applied to `GameState`.
+- **ExternalEvent** — API-driven events (weather, news) carrying the same shape (emoji, narrative, stat deltas) but applied automatically without player input, via the `ExternalEventHandler` strategy interface.
+
+Keeping events as plain data objects — rather than embedding logic in them — means a new event type is just a new instance with different numbers. The application logic lives in the handlers, not the events themselves.
 
 ### Milestones
 
-Ten checkpoints mapped to real cities along the trail. Each milestone has a name, story moment, progress threshold, and a stat bonus. `MilestoneTracker` holds a pointer (`nextMilestoneIndex`) that advances as thresholds are crossed — milestones can't be double-claimed.
+Ten checkpoints mapped to real cities along the trail. Each milestone is a data object with a name, story moment, progress threshold, and stat bonus. `MilestoneTracker` holds a pointer (`nextMilestoneIndex`) that only advances forward — so milestones can't be double-claimed even if progress jumps past multiple thresholds in one day.
 
 | City | Progress | Bonus |
 |---|---|---|
@@ -164,7 +174,21 @@ Ten checkpoints mapped to real cities along the trail. Each milestone has a name
 
 ### Persistence
 
-Game state is serialised to JSON using Gson and saved at `data/saves/{userId}.json`. The save is written after every day and deleted if the game ends (win or lose). `PlayerDataStore` is the only class that touches the file system — all other classes work through it.
+`PlayerDataStore` is the only class that touches the file system. `GameState` knows nothing about saving — it's a plain data object. `GameEngine` calls `saveManager.savePlayerData()` and `saveManager.deletePlayerData()`. Nothing else does. This isolation means the storage strategy can be swapped entirely by changing one class.
+
+Game state is serialised to JSON using Gson at `data/saves/{userId}.json`, written after every day and deleted when the game ends.
+
+**Why JSON over SQLite or a database:**
+
+| | JSON files | SQLite | PostgreSQL |
+|---|---|---|---|
+| Setup required | None | JDBC driver | Running server |
+| Suitable for 1–2 players | Yes | Yes (overkill) | Yes (overkill) |
+| Human-readable saves | Yes | No | No |
+| Query capability | No | Yes | Yes |
+| Scales beyond ~1,000 players | No | Yes | Yes |
+
+For a local CLI game with one active player at a time, JSON is the right fit — Gson is already a dependency, saves are human-readable and easy to debug, and there is no concurrent access to worry about. If the player base grew, only `PlayerDataStore` would need to change.
 
 > [!NOTE]
 > A `repairMissingFields()` method handles backwards-compatible loading — if a save file pre-dates a new field (e.g. `lastRestDay`), the field defaults to `-10` rather than `0`, which avoids false cooldown triggers on load.
@@ -175,7 +199,7 @@ Game state is serialised to JSON using Gson and saved at `data/saves/{userId}.js
 
 ### Network Failures and Timeouts
 
-Both `WeatherApiClient` and `NewsApiClient` wrap all HTTP calls in try/catch. Any failure — connection timeout (5s), read timeout (5s), non-200 status, malformed JSON, null response — silently returns `null` or falls back to `randomMock()`. The game never shows an error to the player for API issues.
+Both `WeatherApiClient` and `NewsApiClient` wrap all HTTP calls in try/catch. Any failure — connection timeout (5s), read timeout (5s), non-200 status, malformed JSON, null response silently returns `null` or falls back to `randomMock()`. The game never shows an error to the player for API issues.
 
 ```java
 try {
