@@ -237,17 +237,45 @@ Gson returns `null` for missing JSON fields. `repairMissingFields()` converts nu
 
 ## Tradeoffs
 
-### What Was Prioritised
+### 1. Command Pattern for the menu over a switch-case
 
-- **Playability over realism** — game balance matters more than accurate simulation. Stats are tuned so a bad streak is recoverable but a series of poor decisions genuinely leads to game over.
-- **Testability** — package-private constructors allow injectable dependencies (`ExternalEventProvider` takes clients, `PlayerDataStore` takes a save directory). No Mockito needed — subclasses and `@TempDir` are enough.
-- **Feature cohesion** — feature-based packages (`api/weather/`, `api/news/`) over layer-based (`services/`, `repositories/`). Each package owns its concern end to end.
+The initial menu was a flat switch-case in `main()`. As the game grew, adding or changing a menu option meant editing the core dispatch logic every time.
 
-### Known Limitations
+Switching to the **Command Pattern** — each menu option is its own class implementing a `Command` interface — meant more files upfront, but adding a new option (e.g. Load Game) never requires touching the menu dispatcher. Each command is also independently testable in isolation.
 
-- **Single `Scanner` instance** — the scanner is created in `SiliconValleyTrail.java` and passed through constructors. This works but couples the entire call chain to `System.in`. A proper solution would use an injectable `InputReader` interface.
-- **`EventEngine` uses an internal `Random`** — making it hard to write deterministic tests for random event selection without refactoring to accept an injectable `Random`. Currently tested statistically (run many times, check distribution).
-- **Weather event is always applied** — even on cloudy days (0 delta), the weather handler fires and prints a line. Minor but adds visual noise on no-effect days.
+The tradeoff: more classes for what could be a simple switch. Worth it here because the menu is expected to grow and the Open/Closed Principle pays off quickly.
+
+### 2. Feature-based packages over layer-based packages
+
+Two common ways to organise a Java project:
+- **Layer-based** — `models/`, `services/`, `repositories/` — group by what the class *is*
+- **Feature-based** — `api/weather/`, `events/`, `game/` — group by what the class *does*
+
+Layer-based feels familiar but causes **cross-cutting changes** — when you add a new feature like weather events, you have to touch files across multiple packages (`models/`, `services/`, `handlers/`). A change that should be local to one feature ends up scattered across the codebase.
+
+Feature-based keeps everything related to weather in `api/weather/`, everything related to events in `events/`, and so on. A change to how news events work stays inside `api/news/` — no other package needs to move.
+
+The tradeoff: a newcomer has to understand the feature structure first rather than finding familiar layer names. But it scales better as the game grows.
+
+### 3. JSON file storage over SQLite or a database
+
+Covered in detail in [Data Modeling → Persistence](#persistence). Short version: one save file per player, no setup, Gson already a dependency. The right fit for a local CLI game — with `PlayerDataStore` as the only class touching storage, upgrading later is a one-class change.
+
+### 4. Strategy Pattern for API event handlers over handling everything in `EventEngine`
+
+Both weather and news events needed to be fetched, applied to game state, and printed to the console. The simpler approach would have been to write that logic directly inside `EventEngine`.
+
+Instead, `WeatherEventHandler` and `NewsEventHandler` each implement the `ExternalEventHandler` interface, and `EventEngine` just calls `handler.execute(event, state)`. 
+
+The alternative — putting both inside `EventEngine` — would have made `EventEngine` responsible for fetching, applying, and displaying two different API sources. As the game grew, adding a third API (e.g. stock market) would mean editing `EventEngine` again. With the Strategy Pattern, a new source is a new handler class — `EventEngine` never changes.
+
+### 5. Statistically tested randomness over injecting `Random`
+
+`EventEngine` uses Java's built-in `Random` internally. Because it's not injectable, tests can't control what random number gets generated — so you can't write "given this exact value, expect this exact event."
+
+Instead, tests run the same function 50–100 times and verify the pattern holds across all runs. For example: "with tech debt at 0, a crisis event should never appear in 50 runs" — this is guaranteed by the code logic, so running it many times proves it reliably. For the crisis event test, the probability of not getting a single crisis in 100 runs when tech debt is high is effectively zero (0.6¹⁰⁰ ≈ 6×10⁻²³).
+
+The tradeoff: tests are probabilistic rather than deterministic. In practice they are reliable enough, but the cleaner long-term solution would be to inject `Random` as a dependency so tests can seed it with known values.
 
 ---
 
