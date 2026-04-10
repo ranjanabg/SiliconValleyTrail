@@ -43,13 +43,13 @@ public class GameEngine {
     private static final int INVESTOR_MEETING_MIN_PROGRESS = 30;
     private static final int INVESTOR_MEETING_COOLDOWN_DAYS = 5;
 
-    private static final List<Choice> DAILY_CHOICES = Arrays.asList(
-        new Choice("🏃 Sprint           - Push the team hard to move faster",    -3000, -15, -15, +7,   0,  0, +15),
-        new Choice("🚶 Steady Pace      - Move at a sustainable speed",          -2000,  -8,  -8, +3,   0,  0,  +5),
-        new Choice("😴 Rest Day         - Full day off, recover and clean up",   -4000, +10, +35,  0,   0,  0, -20),
-        new Choice("🎉 Team Event       - Boost morale with a team outing",      -5000, +25, +15,  0,   0, +5,   0),
-        new Choice("💻 Hackathon        - Public build session, high visibility",-2000,  +8, -15,  0, +10,+15, +10),
-        new Choice("🤝 Investor Meeting - Pitch for funding, costs a day",        +6000,  -8, -10,  0, +10,+10,   0)
+    private static final List<DailyChoice> DAILY_CHOICES = Arrays.asList(
+        new DailyChoice("🏃 Sprint           - Push the team hard to move faster",    -3000, -15, -15, +7,   0,  0, +15),
+        new DailyChoice("🚶 Steady Pace      - Move at a sustainable speed",          -2000,  -8,  -8, +3,   0,  0,  +5),
+        new DailyChoice("😴 Rest Day         - Full day off, recover and clean up",   -4000, +10, +35,  0,   0,  0, -20),
+        new DailyChoice("🎉 Team Event       - Boost morale with a team outing",      -5000, +25, +15,  0,   0, +5,   0),
+        new DailyChoice("💻 Hackathon        - Public build session, high visibility",-2000,  +8, -15,  0, +10,+15, +10),
+        new DailyChoice("🤝 Investor Meeting - Pitch for funding, costs a day",        +6000,  -8, -10,  0, +10,+10,   0)
     );
 
     public GameEngine(Scanner scanner, PlayerDataStore saveManager, String userId) {
@@ -85,12 +85,12 @@ public class GameEngine {
     public void runDay() {
         ConsoleUtils.clearScreen();
         printDayHeader();
-        printChoices();
+        printDailyChoices();
 
-        final Choice choice = getPlayerChoice();
+        final DailyChoice choice = getPlayerDailyChoice();
         if (choice == null) return;
 
-        applyChoice(choice);
+        applyDailyChoice(choice);
         checkLoseConditions();
         if (state.isGameOver()) {
             saveManager.deletePlayerData(userId);
@@ -145,7 +145,7 @@ public class GameEngine {
         System.out.println();
     }
 
-    private void printChoices() {
+    private void printDailyChoices() {
         System.out.println("What's your call for the team today, Founder?");
         System.out.println();
 
@@ -153,7 +153,7 @@ public class GameEngine {
             .mapToInt(c -> visualLength(c.getDescription())).max().orElse(0);
 
         for (int i = 0; i < DAILY_CHOICES.size(); i++) {
-            final Choice choice = DAILY_CHOICES.get(i);
+            final DailyChoice choice = DAILY_CHOICES.get(i);
             final String lockReason = getLockReason(i);
             final String desc = choice.getDescription();
             final String pad = " ".repeat(maxVisualLen - visualLength(desc) + 3);
@@ -197,7 +197,7 @@ public class GameEngine {
         return String.format("-$%,d", -delta);
     }
 
-    private Choice getPlayerChoice() {
+    private DailyChoice getPlayerDailyChoice() {
         final int exitOption = DAILY_CHOICES.size() + 1;
         while (true) {
             System.out.print("Enter your choice (1-" + exitOption + "): ");
@@ -229,7 +229,7 @@ public class GameEngine {
         state.applyFundDelta(DAILY_OPERATING_COST);
     }
 
-    private void applyChoice(Choice choice) {
+    private void applyDailyChoice(DailyChoice choice) {
         state.applyFundDelta(choice.getFundDelta());
         state.applyMoraleDelta(choice.getMoraleDelta());
         state.applyEnergyDelta(choice.getEnergyDelta());
@@ -247,10 +247,10 @@ public class GameEngine {
 
         System.out.println();
         System.out.println("You chose " + choice.getDescription().split("-")[0].trim() + " for the team today.");
-        System.out.println("  " + getChoiceNarrative(DAILY_CHOICES.indexOf(choice)));
+        System.out.println("  " + getDailyChoiceNarrative(DAILY_CHOICES.indexOf(choice)));
     }
 
-    private String getChoiceNarrative(int index) {
+    private String getDailyChoiceNarrative(int index) {
         switch (index) {
             case 0: return "The team pushes hard. Every mile counts — but so does every drop of energy.";
             case 1: return "Measured and deliberate. Not the fastest, but the team is still standing.";

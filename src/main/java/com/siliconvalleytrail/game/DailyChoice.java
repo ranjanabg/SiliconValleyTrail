@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class Choice {
+public class DailyChoice {
     private final String description;
     private final int fundDelta;
     private final int moraleDelta;

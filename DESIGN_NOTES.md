@@ -261,7 +261,17 @@ The tradeoff: a newcomer has to understand the feature structure first rather th
 
 Covered in detail in [Data Modeling → Persistence](#persistence). Short version: one save file per player, no setup, Gson already a dependency. The right fit for a local CLI game — with `PlayerDataStore` as the only class touching storage, upgrading later is a one-class change.
 
-### 4. Strategy Pattern for API event handlers over handling everything in `EventEngine`
+### 4. 4 weather zones for 10 milestone cities — a known mismatch
+
+The trail passes through 10 named cities, but weather is fetched for only 4 geographic zones (San Jose, Mountain View, Palo Alto, San Francisco) because the OpenWeatherMap API is called once per zone and cached until the player crosses into the next.
+
+This creates a visible edge case: when the player reaches the **Sunnyvale milestone (progress = 18%)**, the weather display reads "Mountain View" — not Sunnyvale. The zone boundary is `progress < 18` for San Jose and `progress ≥ 18` for Mountain View, so Sunnyvale lands exactly on the Mountain View side.
+
+The alternative — 10 individual weather zones, one per milestone city — would mean 10 API calls per game instead of 4, higher rate limit exposure, and a noticeable increase in code surface area for a minimal gameplay difference. Sunnyvale and Mountain View are ~3 miles apart with essentially identical weather patterns, so the impact on gameplay is negligible.
+
+Accepted as a simplification. The zone count matches the meaningful geographic legs of the journey, not every city sign on the route.
+
+### 5. Strategy Pattern for API event handlers over handling everything in `EventEngine`
 
 Both weather and news events needed to be fetched, applied to game state, and printed to the console. The simpler approach would have been to write that logic directly inside `EventEngine`.
 
