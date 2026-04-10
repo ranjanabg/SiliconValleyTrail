@@ -37,7 +37,7 @@ public class ExternalEventProvider {
 
     public ExternalEvent getNews(int day) {
         if (day - lastNewsTriggerDay <= NEWS_COOLDOWN_DAYS) return null;
-        if (cachedNewsEvent == null || day != cachedNewsDay) {
+        if (day != cachedNewsDay) {
             cachedNewsEvent = newsClient.fetch();
             cachedNewsDay = day;
             if (cachedNewsEvent != null) lastNewsTriggerDay = day;
