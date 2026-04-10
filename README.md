@@ -1,25 +1,39 @@
 # Silicon Valley Trail
 
-You are the Founder.
+![Java](https://img.shields.io/badge/Java-21-blue?logo=openjdk&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-3.8+-red?logo=apachemaven&logoColor=white)
 
-Your startup is small, scrappy, and sitting in a co-working space in San Jose with $50,000 in the bank, a fired-up team, and one goal: make it to San Francisco.
+---
 
-Not just physically — San Francisco represents everything your startup is chasing. The investors. The press. The credibility. The moment when people stop asking "who are you?" and start asking "how do I get in?"
+> You are the Founder.
+>
+> Your startup is small, scrappy, and sitting in a co-working space in San Jose with $50,000 in the bank, a fired-up team, and one goal: make it to San Francisco.
+>
+> Not just physically — San Francisco represents everything your startup is chasing. The investors. The press. The credibility. The moment when people stop asking "who are you?" and start asking "how do I get in?"
+>
+> The trail between here and there is 100 miles and a hundred decisions. You'll cross Mountain View, cut through Palo Alto, and push into the city — but every mile costs money, energy, and belief. The team believes in you right now. Keep it that way.
+>
+> Each day you choose how to lead the team — and every choice has a cost.
+>
+> Every day a random event lands on your desk — a competing offer for your best engineer, a VC cold email, a critical bug in production, a journalist who wants your story. You pick A or B. There's no perfect answer.
+>
+> Then the real world weighs in. If it's raining in Palo Alto, the commute is rough and spirits drop. If tech layoffs are making headlines, the team gets nervous. If an AI breakthrough is all over the news, everyone stays late to experiment. Live weather and real tech headlines pulled from external APIs shape what kind of day it actually turns out to be.
+>
+> **You win by reaching San Francisco with your team intact.**
+> You lose if you run out of money, your team quits (morale hits zero), or everyone burns out (energy hits zero).
+>
+> *The valley doesn't wait. Neither does your runway.*
 
-The trail between here and there is 100 miles and a hundred decisions. You'll cross Mountain View, cut through Palo Alto, and push into the city — but every mile costs money, energy, and belief. The team believes in you right now. Keep it that way.
+---
 
-Each day you choose how to lead the team — and every choice has a cost.
+## Table of Contents
 
-**But you don't control everything.**
-
-Every day a random event lands on your desk — a competing offer for your best engineer, a VC cold email, a critical bug in production, a journalist who wants your story. You pick A or B. There's no perfect answer.
-
-Then the real world weighs in. If it's raining in Palo Alto, the commute is rough and spirits drop. If tech layoffs are making headlines, the team gets nervous. If an AI breakthrough is all over the news, everyone stays late to experiment. Live weather and real tech headlines pulled from external APIs shape what kind of day it actually turns out to be.
-
-**You win by reaching San Francisco with your team intact.**
-You lose if you run out of money, your team quits (morale hits zero), or everyone burns out (energy hits zero).
-
-The valley doesn't wait. Neither does your runway.
+- [Quick Start](#quick-start)
+- [API Keys](#api-keys)
+- [Running Tests](#running-tests)
+- [Example Inputs](#example-inputs)
+- [Architecture Overview](#architecture-overview)
+- [AI Utilization](#ai-utilization)
 
 ---
 
@@ -31,12 +45,13 @@ The valley doesn't wait. Neither does your runway.
 - **Maven 3.8+** — [Download from maven.apache.org](https://maven.apache.org/download.cgi)
 
 Verify your setup:
+
 ```bash
 java -version    # Should print 21 or higher
 mvn -version     # Should print 3.8 or higher
 ```
 
-### Clone and run
+### Run with Maven
 
 ```bash
 git clone https://github.com/ranjanabg/SiliconValleyTrail.git
@@ -44,7 +59,14 @@ cd SiliconValleyTrail
 mvn compile exec:java
 ```
 
-That's it. No database, no server, no setup beyond Java and Maven.
+### Run as a JAR
+
+```bash
+mvn package
+java -jar target/silicon-valley-trail-1.0-SNAPSHOT.jar
+```
+
+No database, no server, no setup beyond Java and Maven.
 
 ---
 
@@ -52,16 +74,21 @@ That's it. No database, no server, no setup beyond Java and Maven.
 
 The game integrates with two optional external APIs. Without API keys the game falls back to built-in mock events automatically — no configuration needed to play.
 
+> [!NOTE]
+> Simply don't set the environment variables to run in mock mode. All gameplay is fully functional without API keys.
+
 ### Setting API keys
 
-Copy the example file:
+Copy the example file and fill in your keys:
+
 ```bash
 cp .env.example .env
 ```
 
-Fill in your keys in `.env` — but note the game reads keys **from environment variables**, not from a `.env` file directly. Export them in your shell before running:
+The game reads keys **from environment variables**, not from the `.env` file directly. Export them in your shell before running:
 
 **macOS / Linux:**
+
 ```bash
 export OPENWEATHER_API_KEY=your_key_here
 export NEWS_API_KEY=your_key_here
@@ -69,6 +96,7 @@ mvn compile exec:java
 ```
 
 **Windows (Command Prompt):**
+
 ```cmd
 set OPENWEATHER_API_KEY=your_key_here
 set NEWS_API_KEY=your_key_here
@@ -82,10 +110,6 @@ mvn compile exec:java
 | OpenWeatherMap | [openweathermap.org/api](https://openweathermap.org/api) | Free tier, no credit card |
 | NewsAPI | [newsapi.org](https://newsapi.org) | Free tier, developer use |
 
-### Running in mock mode
-
-Simply don't set the environment variables. The game detects missing keys and uses built-in mock events for both weather and news. All gameplay is fully functional in mock mode.
-
 ---
 
 ## Running Tests
@@ -97,19 +121,11 @@ mvn test
 119 tests across 11 test classes covering game state, events, lock conditions, API handlers, persistence, and more.
 
 To run a specific test class:
+
 ```bash
 mvn test -Dtest=GameEngineTest
 mvn test -Dtest=EventEngineTest
 mvn test -Dtest=GameStateTest
-```
-
----
-
-## Building a JAR
-
-```bash
-mvn package
-java -jar target/silicon-valley-trail-1.0-SNAPSHOT.jar
 ```
 
 ---
@@ -165,7 +181,7 @@ com.siliconvalleytrail/
 | Dependency | Version | Purpose |
 |---|---|---|
 | Java | 21 | Language and runtime |
-| Maven | 3.8+ | Build, dependency management |
+| Maven | 3.8+ | Build and dependency management |
 | Lombok | 1.18.38 | Reduces boilerplate (`@Getter`, `@AllArgsConstructor`) |
 | Gson | 2.10.1 | JSON serialisation for save files |
 | JUnit Jupiter | 5.10.2 | Unit testing |
