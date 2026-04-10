@@ -7,8 +7,7 @@ A CLI strategy game built in Java — lead your startup from San Jose to San Fra
 
 ---
 
-<!-- Replace the path below with an actual screenshot or GIF of the game in action -->
-![Silicon Valley Trail demo](docs/screenshot.png)
+![Silicon Valley Trail demo](docs/demo.gif)
 
 ---
 
