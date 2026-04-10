@@ -35,7 +35,7 @@ Each game day follows a fixed sequence:
       │
  7 ── 🌤️   Weather event  (auto-applied)
       │
- 8 ── 📰  News event  (if 2-day cooldown expired)
+ 8 ── 📰  News event                         
       │
  9 ── ❓  Lose / Win check ─────────── progress = 100% ──────────▶ 🎉 You Win!
       │
@@ -76,9 +76,11 @@ The game is designed to create tension between short-term speed and long-term su
 
 ### OpenWeatherMap
 
-Chosen because it has a generous free tier, no credit card required, and returns structured JSON with condition codes and temperature that map cleanly to game effects.
+The game is set on a real geographic trail through Silicon Valley — San Jose, Mountain View, Palo Alto, San Francisco. These are real cities with real weather, and that's exactly why this API fits. When the game says it's raining in Palo Alto, it actually is. That connection between the real world and the game world is what makes the weather mechanic feel meaningful rather than random.
 
-Weather is fetched once per geographic zone (San Jose → Mountain View → Palo Alto → San Francisco) and cached until the player crosses into a new zone. This avoids hammering the API and gives each region a consistent "feel" during that leg of the journey.
+Weather directly influences how a startup team functions day to day. A sunny morning lifts morale naturally. A thunderstorm that kills the commute and traps everyone indoors is something every Bay Area engineer has experienced. The API lets the game reflect that lived reality — the player isn't just reading a fictional weather report, they're feeling the same conditions their real counterparts in the valley deal with.
+
+Weather is fetched once per geographic zone (San Jose → Mountain View → Palo Alto → San Francisco) and cached until the player crosses into a new zone, giving each leg of the journey a consistent feel.
 
 **Effects by condition:**
 
@@ -93,7 +95,9 @@ Weather is fetched once per geographic zone (San Jose → Mountain View → Palo
 
 ### NewsAPI
 
-Chosen for the same reasons as OpenWeatherMap — free developer tier, simple REST API, and headlines map naturally to the startup world theme.
+Startups don't operate in a vacuum. The mood of a founding team is shaped by what's happening in the industry around them — a wave of tech layoffs makes everyone nervous about job security, a high-profile funding round reminds the team that big things are still possible, an AI breakthrough has engineers staying late just to experiment. This is the reality of working in the valley, and it felt wrong to ignore it in a game set there.
+
+Tech news headlines are a direct signal of the startup ecosystem's pulse. Scanning real headlines and mapping them to team morale, energy, and hype means the game world reacts to the same news cycle the player might be reading that morning. It blurs the line between the game and reality in a way that makes the experience feel alive.
 
 News is fetched at most once every 3 days (2-day cooldown after each trigger) and only fires 25% of the time in mock mode. Real mode scans headline keywords and maps them to effects:
 
