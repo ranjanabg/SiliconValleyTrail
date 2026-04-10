@@ -140,14 +140,27 @@ News is fetched at most once every 3 days (2-day cooldown after each trigger) an
 
 ### Events
 
-Two event types follow the same `ExternalEvent` shape (emoji, narrative, stat deltas):
+Two event types share the same `ExternalEvent` shape (emoji, narrative, stat deltas):
 
 - **RandomEvent** — internal events the player actively chooses between (A/B choices, each with a `RandomEventChoice` holding deltas + outcome narrative)
 - **ExternalEvent** — API-driven events (weather, news) applied automatically via the `ExternalEventHandler` strategy interface
 
 ### Milestones
 
-Four fixed checkpoints at progress thresholds (20%, 45%, 72%, 100%). Each milestone has a name, description, and fund reward. `MilestoneTracker` holds a pointer (`nextMilestoneIndex`) and advances it as thresholds are crossed — so milestones can't be double-claimed.
+Ten checkpoints mapped to real cities along the trail. Each milestone has a name, story moment, progress threshold, and a stat bonus. `MilestoneTracker` holds a pointer (`nextMilestoneIndex`) that advances as thresholds are crossed — milestones can't be double-claimed.
+
+| City | Progress | Bonus |
+|---|---|---|
+| Santa Clara | 9% | +$3,000, +5 energy |
+| Sunnyvale | 18% | +$5,000, +10 morale |
+| Mountain View | 27% | +5 morale, +10 hype |
+| Cupertino | 36% | +15 energy |
+| Los Altos | 45% | +10 morale, +5 connections |
+| Palo Alto | 54% | +$10,000 |
+| Menlo Park | 63% | +15 morale, +10 energy |
+| Redwood City | 72% | +$5,000, +10 connections |
+| San Mateo | 81% | +10 morale, +8 connections |
+| Burlingame | 90% | +10 morale, +15 hype |
 
 ### Persistence
 
