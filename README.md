@@ -3,9 +3,11 @@
 ![Java](https://img.shields.io/badge/Java-21-blue?logo=openjdk&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-3.8+-red?logo=apachemaven&logoColor=white)
 
-A CLI strategy game built in Java — lead your startup from San Jose to San Francisco before the money runs out. A small GIF below for the trailer!
+A CLI strategy game built in Java — lead your startup from San Jose to San Francisco before the money runs out.
 
 ---
+
+*A quick look at the game in action:*
 
 ![Silicon Valley Trail demo](docs/demo.gif)
 
