@@ -180,10 +180,12 @@ Game state is serialised to JSON using Gson at `data/saves/{userId}.json`, writt
 
 **Why JSON over SQLite or a database:**
 
+Each save file is ~100–200 bytes. File system directory lookup degrades noticeably around 500–1,000 files — not because of file size, but because searching across a flat directory has no indexing. This is the honest scale ceiling for JSON file storage, and it's the right choice here: this is a local CLI game where "small local use" is the actual target, not an inflated number.
+
 | | JSON files | SQLite | PostgreSQL |
 |---|---|---|---|
 | Setup required | None | JDBC driver | Running server |
-| Suitable for 1–2 players | Yes | Yes (overkill) | Yes (overkill) |
+| Suitable for | Small local use | Moderate scale | Large scale |
 | Human-readable saves | Yes | No | No |
 | Query capability | No | Yes | Yes |
 | Scales beyond ~1,000 players | No | Yes | Yes |
