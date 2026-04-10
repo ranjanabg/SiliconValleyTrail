@@ -209,3 +209,15 @@ No database, no web server, no external frameworks.
 - **Architectural decisions** — discussing design pattern options (Command Pattern for menu, Strategy Pattern for API event handlers), storage tradeoffs, and package structure, with final decisions made by the developer
 - **Unit tests** — assistance writing test cases for core mechanics (`GameState`, `GameEngine`, `EventEngine`, `ExternalEventProvider`, API handlers, persistence)
 - **Debugging** — identifying root causes of bugs encountered during development (double Enter prompts, lose condition ordering, emoji terminal alignment)
+
+### How AI Could Be Integrated into the Game Itself
+
+The current game uses rule-based keyword matching for news events and fixed condition codes for weather. Several areas could be meaningfully improved by integrating an LLM API:
+
+- **Smarter news interpretation** — instead of matching fixed keywords like "layoff" or "funding", pass the actual headline to an LLM and ask it to classify the sentiment and relevance to a startup team. This would catch nuanced headlines that simple keyword matching misses entirely.
+
+- **Dynamic event narratives** — currently every event has a fixed description written at development time. An LLM could generate contextual narratives based on the current game state — e.g. "Your team just hit day 15, morale is low, and there's a thunderstorm outside" produces a more personalised story moment than a static string.
+
+- **AI advisor character** — an in-game advisor powered by an LLM that the player can consult once per day. Given the current stats, the advisor could offer strategic suggestions, warn about risks, or simply add flavour commentary — making each run feel less repetitive.
+
+- **Adaptive game balance** — an LLM or lightweight ML model could analyse play patterns across sessions and subtly tune event frequency or stat drains to keep the game in the tension zone — not too easy, not unwinnable — based on how the current run is going.
