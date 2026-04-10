@@ -21,9 +21,29 @@ Key decisions, tradeoffs, and the thinking behind Silicon Valley Trail.
 Each game day follows a fixed sequence:
 
 ```
-Show stats → Player picks daily action → Apply choice → Check lose conditions
-→ Milestone check → Random event (player choice) → Weather event → News event
-→ Check lose/win conditions → Apply daily overhead → Advance day
+ 1 ── 📊  Show stats & available choices
+      │
+ 2 ── 🎯  Player picks daily action
+      │
+ 3 ── ⚙️   Apply choice deltas
+      │
+ 4 ── ❓  Lose check ──────────────── fund / morale / energy = 0 ──▶ 💀 Game Over
+      │
+ 5 ── 🏆  Milestone check
+      │
+ 6 ── 🎲  Random event  (A/B player choice)
+      │
+ 7 ── 🌤️   Weather event  (auto-applied)
+      │
+ 8 ── 📰  News event  (if 2-day cooldown expired)
+      │
+ 9 ── ❓  Lose / Win check ─────────── progress = 100% ──────────▶ 🎉 You Win!
+      │
+10 ── 📉  Daily overhead  (-5 morale, -$1,500 funds)
+      │
+11 ── ❓  Final lose check ─────────── fund / morale / energy = 0 ──▶ 💀 Game Over
+      │
+12 ── ➡️   Advance to next day  (save game)
 ```
 
 ### Balance Philosophy
