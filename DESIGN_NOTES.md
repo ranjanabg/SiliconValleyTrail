@@ -180,7 +180,7 @@ Game state is serialised to JSON using Gson at `data/saves/{userId}.json`, writt
 
 **Why JSON over SQLite or a database:**
 
-Each save file is ~100–200 bytes. File system directory lookup degrades noticeably around 500–1,000 files — not because of file size, but because searching across a flat directory has no indexing. This is the honest scale ceiling for JSON file storage, and it's the right choice here: this is a local CLI game where "small local use" is the actual target, not an inflated number.
+Each save file is ~100–200 bytes. File system directory lookup degrades noticeably around 500–1,000 files, not because of file size, but because searching across a flat directory has no indexing. This is the honest scale ceiling for JSON file storage, and it's the right choice here: this is a local CLI game where "small local use" is the actual target, not an inflated number.
 
 | | JSON files | SQLite | PostgreSQL |
 |---|---|---|---|
@@ -269,14 +269,6 @@ Instead, `WeatherEventHandler` and `NewsEventHandler` each implement the `Extern
 
 The alternative — putting both inside `EventEngine` — would have made `EventEngine` responsible for fetching, applying, and displaying two different API sources. As the game grew, adding a third API (e.g. stock market) would mean editing `EventEngine` again. With the Strategy Pattern, a new source is a new handler class — `EventEngine` never changes.
 
-### 5. Statistically tested randomness over injecting `Random`
-
-`EventEngine` uses Java's built-in `Random` internally. Because it's not injectable, tests can't control what random number gets generated — so you can't write "given this exact value, expect this exact event."
-
-Instead, tests run the same function 50–100 times and verify the pattern holds across all runs. For example: "with tech debt at 0, a crisis event should never appear in 50 runs" — this is guaranteed by the code logic, so running it many times proves it reliably. For the crisis event test, the probability of not getting a single crisis in 100 runs when tech debt is high is effectively zero (0.6¹⁰⁰ ≈ 6×10⁻²³).
-
-The tradeoff: tests are probabilistic rather than deterministic. In practice they are reliable enough, but the cleaner long-term solution would be to inject `Random` as a dependency so tests can seed it with known values.
-
 ---
 
 ## If I Had More Time
@@ -297,7 +289,7 @@ Instead of choices being locked/unlocked by fixed thresholds, choices could cont
 
 ### Storage Scaling
 
-Current JSON file storage handles 1–2 players well. The migration path:
+Current JSON file storage handles small number of players well. The migration path:
 
 - **~1,000 players** — JSON files as-is
 - **~500,000 players** — SQLite via JDBC (`PlayerDataStore` is the only class to change)
